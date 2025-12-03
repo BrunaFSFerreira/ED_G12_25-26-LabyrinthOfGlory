@@ -1,0 +1,27 @@
+[
+  {
+    "idEnigma": "e1",
+    "pergunta": "Qual é a capital de Portugal?",
+    "resposta": "Lisboa"
+  },
+  {
+    "idEnigma": "e2",
+    "pergunta": "Quanto é 7 * 6?",
+    "resposta": "42"
+  },
+  {
+    "idEnigma": "e3",
+    "pergunta": "Quem escreveu 'Dom Quixote'?",
+    "resposta": "Miguel de Cervantes"
+  },
+  {
+    "idEnigma": "e4",
+    "pergunta": "Qual é o maior planeta do sistema solar?",
+    "resposta": "Júpiter"
+  },
+  {
+    "idEnigma": "e5",
+    "pergunta": "Em que ano o homem pisou a Lua pela primeira vez?",
+    "resposta": "1969"
+    }
+]
