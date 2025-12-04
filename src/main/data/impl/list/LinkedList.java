@@ -2,11 +2,12 @@ package main.data.impl.list;
 
 import main.data.execption.ElementNotFoundExecption;
 import main.data.execption.EmptyCollectionExecption;
+import main.model.Divisao;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class LinkedList<T> implements Iterable<T>{
+public class LinkedList<T> extends Divisao implements Iterable<T>{
 
     private int count;
     private LinearNode<T> head, tail;

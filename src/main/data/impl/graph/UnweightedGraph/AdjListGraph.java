@@ -7,7 +7,7 @@ import main.data.impl.stack.LinkedStack;
 
 import java.util.Iterator;
 
-public class AdjListGraph<T> implements GraphADT<T>, Iterable<T> {
+public class AdjListGraph<T> implements GraphADT<T> {
     protected final int DEFAULT_CAPACITY = 10;
     protected int numVertices;
     protected ArrayUnorderedList<T>[] adjList;
@@ -309,13 +309,5 @@ public class AdjListGraph<T> implements GraphADT<T>, Iterable<T> {
         return numVertices;
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        ArrayUnorderedList<T> vertexList = new ArrayUnorderedList<>();
-        for (int i = 0; i < numVertices; i++) {
-            vertexList.addToRear(vertices[i]);
-        }
-        return vertexList.iterator();
-    }
 
 }

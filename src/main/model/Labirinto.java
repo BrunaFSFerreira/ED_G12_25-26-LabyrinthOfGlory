@@ -128,12 +128,16 @@ public class Labirinto {
      * @param id O ID da divisão a ser verificada.
      * @return true se a divisão existir, false caso contrário.
      */
-    private Divisao getDivisaoById(String id) {
+    public Divisao getDivisaoById(String id) {
         for (Divisao divisao : divs) {
             if (divisao.getId().equals(id)) {
                 return divisao;
             }
         }
         return null;
+    }
+
+    public AdjListGraph<Divisao> getDivs() {
+        return divs;
     }
 }
