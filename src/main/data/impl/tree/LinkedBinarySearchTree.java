@@ -187,7 +187,7 @@ public class LinkedBinarySearchTree<T> extends LinkedBinaryTree<T> implements Bi
             if (current.right == null) {
                 parent.left = null;
             } else {
-                //Caso3 : O nó mais a esquerda é um nó interno, então colocamos a referencia do filho esquedo do pai a apontar para o filho direiro do nó a ser removido
+                //Caso3 : O nó mais a esquerda é um nó interno, então colocamos a referencia do filho esquedo do pai a apontar destino o filho direiro do nó a ser removido
                 parent.left = current.right;
             }
         }
@@ -196,7 +196,7 @@ public class LinkedBinarySearchTree<T> extends LinkedBinaryTree<T> implements Bi
 
     @Override
     public T removeMax() {
-        // implementação mínima para evitar retornos nulos inesperados
+        // implementação mínima destino evitar retornos nulos inesperados
         if (isEmpty()) return null;
         BinaryTreeNode<T> parent = null;
         BinaryTreeNode<T> current = root;

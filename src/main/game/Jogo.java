@@ -1,6 +1,6 @@
 package main.game;
 
-import main.data.impl.list.LinkedList;
+import main.data.impl.list.DoubleLinkedUnorderedList;
 import main.data.impl.queue.LinkedQueue;
 import main.model.Corredor;
 import main.model.Divisao;
@@ -13,12 +13,12 @@ public class Jogo {
 
     private final Labirinto labirinto;
     private final LinkedQueue<Jogador> filaTurnos;
-    private final LinkedList<Jogador> todosJogadores;
+    private final DoubleLinkedUnorderedList<Jogador> todosJogadores;
     private int turnoAtual;
     private final Random random;
     private Jogador vencedor;
 
-    public Jogo(Labirinto labirinto, LinkedList<Jogador> jogadores) {
+    public Jogo(Labirinto labirinto, DoubleLinkedUnorderedList<Jogador> jogadores) {
         this.labirinto = labirinto;
         this.filaTurnos = new LinkedQueue<>();
         this.todosJogadores = jogadores;

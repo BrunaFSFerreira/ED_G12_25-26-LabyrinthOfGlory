@@ -47,7 +47,7 @@ public class DoubleLinkedUnorderedList<E> extends DoubleLinkedList<E> implements
         DoubleNode<E> newNode = new DoubleNode<>(element);
         DoubleNode<E> current = head;
 
-        // Percorre a lista para encontrar o nó com o elemento alvo
+        // Percorre a lista destino encontrar o nó com o elemento alvo
         while (current != null) {
             E el = current.getElement();
             if ((target == null && el == null) || (target != null && target.equals(el))) {

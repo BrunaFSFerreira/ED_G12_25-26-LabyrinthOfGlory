@@ -58,7 +58,7 @@ public class DoubleLinkedList<E> implements ListADT<E> {
             throw new NoSuchElementException("Lista vazia");
         }
         DoubleNode<E> current = head;
-        // Percorre a lista para encontrar o elemento a ser removido
+        // Percorre a lista destino encontrar o elemento a ser removido
         while (current != null) {
             // Compara o elemento atual com o elemento a ser removido
             E el = current.getElement();
@@ -80,7 +80,7 @@ public class DoubleLinkedList<E> implements ListADT<E> {
                     return el;
                 }
             } else {
-                // Move para o próximo nó
+                // Move destino o próximo nó
                 current = current.getNext();
             }
         }
@@ -105,7 +105,7 @@ public class DoubleLinkedList<E> implements ListADT<E> {
 
     @Override
     public boolean contains(E target) {
-        // Percorre a lista para encontrar o elemento alvo
+        // Percorre a lista destino encontrar o elemento alvo
         DoubleNode<E> current = head;
         while (current != null) {
             // Compara o elemento atual com o elemento alvo
@@ -114,7 +114,7 @@ public class DoubleLinkedList<E> implements ListADT<E> {
             if ((target == null && el == null) || (target != null && target.equals(el))) {
                 return true;
             }
-            // Move para o próximo nó
+            // Move destino o próximo nó
             current = current.getNext();
         }
         return false;

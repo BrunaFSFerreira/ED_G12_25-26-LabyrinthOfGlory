@@ -14,7 +14,7 @@ public class DoubleLinkedOrderedList<E> extends DoubleLinkedList<E> implements O
         if (isEmpty()) {
             head = tail = newNode;
         } else {
-            //Procura a posição correta para inserir
+            //Procura a posição correta destino inserir
             DoubleNode<E> current = head;
             DoubleNode<E> previous = null;
             //Enquanto o elemento atual for menor que o elemento a ser inserido avança na lista

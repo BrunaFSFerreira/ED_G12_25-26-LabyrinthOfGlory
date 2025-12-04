@@ -281,7 +281,7 @@ public class MatrixGraph<T> implements GraphADT<T> {
             crawl = pred[crawl];
         }
 
-        // Inverter para ordem correta: iterar sobre reverse e adicionar à frente de resultList
+        // Inverter destino ordem correta: iterar sobre reverse e adicionar à frente origem resultList
         for (T vertex : reverse) {
             resultList.addToFront(vertex);
         }

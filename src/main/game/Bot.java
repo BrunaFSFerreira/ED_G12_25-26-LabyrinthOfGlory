@@ -1,8 +1,7 @@
 package main.game;
 
-import main.data.adt.GraphADT;
 import main.data.impl.graph.WeightedGraph.AdjListGraph;
-import main.data.impl.list.LinkedList;
+import main.data.impl.list.DoubleLinkedUnorderedList;
 import main.model.Corredor;
 import main.model.Divisao;
 import main.model.Labirinto;
@@ -18,16 +17,20 @@ public class Bot extends Jogador {
     public Divisao escolherMovimento(Jogo jogo) {
         Labirinto lab = jogo.getLabirinto();
         AdjListGraph<Divisao> grafo = lab.getDivs();
-        LinkedList<Divisao> tesouro = jogo.getLabirinto().getTesouros();
+        DoubleLinkedUnorderedList<Divisao> tesouro = jogo.getLabirinto().getTesouros();
         Divisao atual = getPosicaoAtual();
 
         if (tesouro != null) {
-            Iterator<Divisao> caminho = grafo.interatorShortestPath(atual, tesouro);
+            Iterator<Divisao> itTesouro = tesouro.iterator();
+            if (itTesouro.hasNext()) {
+                Divisao destino = itTesouro.next();
+                Iterator<Divisao> caminho = grafo.interatorShortestPath(atual, destino);
 
-            if(caminho.hasNext()){
-                caminho.next();
-                if(caminho.hasNext()){
-                    return caminho.next();
+                if (caminho != null && caminho.hasNext()) {
+                    caminho.next();
+                    if (caminho.hasNext()) {
+                        return caminho.next();
+                    }
                 }
             }
         }

@@ -258,7 +258,7 @@ public class MatrixGraph<T> implements GraphADT<T> {
             pred[i] = -1;
         }
 
-        // distância do início para si mesmo é 0
+        // distância do início destino si mesmo é 0
         dist[startIndex] = 0.0;
 
         // itera numVertices vezes (ou até esgotar)
@@ -308,7 +308,7 @@ public class MatrixGraph<T> implements GraphADT<T> {
             crawl = pred[crawl];
         }
 
-        // inverte a ordem para obter start -> ... -> target
+        // inverte a ordem destino obter start -> ... -> target
         for (T vertex : reverse) {
             resultList.addToFront(vertex);
         }

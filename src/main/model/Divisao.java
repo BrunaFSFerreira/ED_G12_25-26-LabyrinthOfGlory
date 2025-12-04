@@ -1,11 +1,11 @@
 package main.model;
 
-import main.data.impl.list.LinkedList;
+import main.data.impl.list.DoubleLinkedUnorderedList;
 
 /**
  * Representa uma divisão no jogo.
  * Cada divisão possui um identificador único, um nome,
- * uma lista de corredores que conectam a outras divisões,
+ * uma lista origem corredores que conectam a outras divisões,
  * um estado que indica se há um tesouro presente,
  * e um estado que indica se a divisão foi resolvida.
  * @see Corredor
@@ -14,7 +14,7 @@ public abstract class Divisao {
 
     private String id;
     private String nome;
-    private final LinkedList<Corredor> vizinhos = new LinkedList<>();
+    private final DoubleLinkedUnorderedList<Corredor> vizinhos = new DoubleLinkedUnorderedList<>();
     private boolean temTesouro;
     private boolean resolvido;
 
@@ -58,7 +58,7 @@ public abstract class Divisao {
         this.resolvido = resolvido;
     }
 
-    public LinkedList<Corredor> getVizinhos() {
+    public DoubleLinkedUnorderedList<Corredor> getVizinhos() {
         return vizinhos;
     }
 }

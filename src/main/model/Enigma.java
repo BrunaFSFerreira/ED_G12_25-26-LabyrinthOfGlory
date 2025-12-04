@@ -1,5 +1,6 @@
 package main.model;
 
+import main.data.impl.list.DoubleLinkedUnorderedList;
 import main.data.impl.list.LinkedList;
 import main.data.impl.queue.LinkedQueue;
 
@@ -75,7 +76,7 @@ public class Enigma {
 
     private void reciclarEnigmas() {
         while (!poll.isEmpty()) {
-            disponiveis.enqueue(poll.dequeue()); // Move todos os enigmas de volta para a fila de disponíveis
+            disponiveis.enqueue(poll.dequeue()); // Move todos os enigmas origem volta destino a fila origem disponíveis
         }
     }
 

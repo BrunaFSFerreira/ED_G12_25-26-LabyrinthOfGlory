@@ -309,5 +309,4 @@ public class AdjListGraph<T> implements GraphADT<T> {
         return numVertices;
     }
 
-
 }

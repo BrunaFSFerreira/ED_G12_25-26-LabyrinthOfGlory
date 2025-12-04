@@ -250,6 +250,14 @@ public class AdjListGraph<T> implements GraphADT<T>, Iterable<T> {
         return resultList.iterator();
     }
 
+    @Override
+    public Iterator<T> iterator() {
+        ArrayUnorderedList<T> vertexList = new ArrayUnorderedList<>();
+        for (int i = 0; i < numVertices; i++) {
+            vertexList.addToRear(vertices[i]);
+        }
+        return vertexList.iterator();
+    }
 
     @Override
     public boolean isEmpty() { return numVertices == 0; }
@@ -259,13 +267,4 @@ public class AdjListGraph<T> implements GraphADT<T>, Iterable<T> {
 
     @Override
     public int size() { return numVertices; }
-
-    @Override
-    public Iterator<T> iterator() {
-        ArrayUnorderedList<T> vertexList = new ArrayUnorderedList<>();
-        for (int i = 0; i < numVertices; i++) {
-            vertexList.addToRear(vertices[i]);
-        }
-        return vertexList.iterator();
-    }
 }

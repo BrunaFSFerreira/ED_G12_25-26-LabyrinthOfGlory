@@ -4,6 +4,9 @@
  */
 package main.data.adt;
 
+import main.data.execption.ElementNotFoundExecption;
+import main.data.execption.EmptyCollectionExecption;
+
 import java.util.Iterator;
 
 /**
@@ -28,7 +31,7 @@ public interface ListADT<T> extends Iterable<T> {
      * Removes and returns the specified element from this list.
      * @param element the element to be removed from the list
      */
-    public T remove(T element);
+    public T remove(T element) throws EmptyCollectionExecption, ElementNotFoundExecption;
 
     /**
      * Returns a reference to the first element in this list.

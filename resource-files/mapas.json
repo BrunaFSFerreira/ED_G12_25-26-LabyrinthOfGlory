@@ -1,0 +1,27 @@
+[
+  {
+    "divisoes": [
+      { "id": "d1", "nome": "Entrada" },
+      { "id": "d2", "nome": "Sala A" },
+      { "id": "d3", "nome": "Sala B" },
+      { "id": "d4", "nome": "Tesouro" },
+      { "id": "d5", "nome": "Armadilha" },
+      { "id": "d6", "nome": "Sala C"},
+      { "id": "d7", "nome": "Saída Secreta" },
+      { "id": "d8", "nome": "Corredor Escuro" },
+      { "id": "d9", "nome": "Caverna Subterrânea"}
+    ],
+    "corredores": [
+      { "origem": "d1", "destino": "d2", "tamanho": 5 },
+      { "origem": "d2", "destino": "d3", "tamanho": 3 },
+      { "origem": "d3", "destino": "d4", "tamanho": 4 },
+      { "origem": "d1", "destino": "d3", "tamanho": 8},
+      { "origem": "d2", "destino": "d5", "tamanho": 6 },
+      { "origem": "d5", "destino": "d6", "tamanho": 2 },
+      { "origem": "d6", "destino": "d7", "tamanho": 7 },
+      { "origem": "d3", "destino": "d8", "tamanho": 5 },
+      { "origem": "d8", "destino": "d9", "tamanho": 4 },
+      { "origem": "d9", "destino": "d7", "tamanho": 6 }
+    ]
+  }
+]

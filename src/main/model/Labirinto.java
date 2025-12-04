@@ -1,7 +1,8 @@
 package main.model;
 
 import main.data.impl.graph.WeightedGraph.AdjListGraph;
-import main.data.impl.list.LinkedList;
+import main.data.impl.list.DoubleLinkedList;
+import main.data.impl.list.DoubleLinkedUnorderedList;
 import main.io.JSONReader;
 
 /**
@@ -31,30 +32,40 @@ public class Labirinto {
 
     /**
      * Adiciona um corredor entre duas divisões no labirinto.
-     * @param d1 A divisão origem origem.
-     * @param d2 A divisão origem destino.
+     * @param origem A divisão origem origem.
+     * @param destino A divisão origem destino.
      * @param c O corredor que conecta as duas divisões.
      * @return true se o corredor foi adicionado com sucesso, false caso contrário.
      */
-    public boolean addCorredor(Divisao d1, Divisao d2, Corredor c) {
-        if (d1 == null || d2 == null || c == null) {
-            return false;
-        }
-        if ( getDivisaoById(d1.getId()) == null || getDivisaoById(d2.getId()) == null) {
+    // src/main/model/Labirinto.java
+    public boolean addCorredor(Divisao origem, Divisao destino, Corredor c) {
+        if (origem == null || destino == null || c == null) {
             return false;
         }
 
-        divs.addEdge(d1, d2, 0);
+        if (getDivisaoById(origem.getId()) == null || getDivisaoById(destino.getId()) == null) {
+            return false;
+        }
+
+        for (Corredor existente : origem.getVizinhos()) {
+            if (existente.getDestino().equals(destino)) {
+                return false;
+            }
+        }
+
+        origem.getVizinhos().addToRear(c);
+        destino.getVizinhos().addToRear(new Corredor(origem));
         return true;
     }
+
 
     /**
      * Obtém todas as divisões que são entradas do labirinto.
      * Uma divisão é considerada uma entrada se nenhum corredor leva a ela.
      * @return Uma lista origem divisões que são entradas do labirinto.
      */
-    public LinkedList<Divisao> getEntradas() {
-        LinkedList<Divisao> entradas = new LinkedList<>();
+    public DoubleLinkedUnorderedList<Divisao> getEntradas() {
+        DoubleLinkedUnorderedList<Divisao> entradas = new DoubleLinkedUnorderedList<>();
         for (Divisao divisao : divs) {
             boolean isEntrada = true;
             for (Divisao vizinho : divs) {
@@ -67,7 +78,7 @@ public class Labirinto {
                 if (!isEntrada) break;
             }
             if (isEntrada) {
-                entradas.add(divisao);
+                entradas.addToRear(divisao);
             }
         }
         return entradas;
@@ -77,24 +88,24 @@ public class Labirinto {
      * Obtém todas as divisões que possuem tesouros no Labirinto.
      * @return Uma lista contem todas as divisões com tesouros.
      */
-    public LinkedList<Divisao> getTesouros() {
-       LinkedList<Divisao> tesouros = new LinkedList<>();
+    public DoubleLinkedUnorderedList<Divisao> getTesouros() {
+        DoubleLinkedUnorderedList<Divisao> tesouros = new DoubleLinkedUnorderedList<>();
         for (Divisao divisao : divs) {
             if (divisao.isTemTesouro()) {
-                tesouros.add(divisao);
+                tesouros.addToRear(divisao);
             }
         }
         return tesouros;
     }
 
     public void loadJSONMap() {
-       /* JSONReader reader = new JSONReader();
-        LinkedList<JSONReader.MapaDTO> mapas = new JSONReader().lerMapa();
+        JSONReader reader = new JSONReader();
+        DoubleLinkedList<JSONReader.MapaDTO> mapas = new JSONReader().lerMapa();
 
-        JSONReader.MapaDTO mapa = mapas.get(0); //Carregar o primeiro mapa encontrado
+        JSONReader.MapaDTO mapa = mapas.first();
 
         //Criar Divisões
-        for (JSONReader.DivisaoDTO divDTO : mapas.divisoes) {
+        for (JSONReader.DivisaoDTO divDTO : mapa.divisoes) {
             Divisao divisao = new Divisao(divDTO.id, divDTO.nome, divDTO.temTesouro) {};
 
             if(!addDivisao(divisao)) {
@@ -103,7 +114,7 @@ public class Labirinto {
         }
 
         //Criar Corredores
-        for (JSONReader.CorredorDTO corDTO : mapas.corredores) {
+        for (JSONReader.CorredorDTO corDTO : mapa.corredores) {
             Divisao origem = getDivisaoById(corDTO.origem);
             Divisao destino = getDivisaoById(corDTO.destino);
 
@@ -118,9 +129,8 @@ public class Labirinto {
                 System.out.println("Falha ao adicionar corredor: " + corDTO.origem + " -> " + corDTO.destino);
             }
         }
-
-        System.out.println("Mapa finalizada com sucesso!");
-*/
+        //TODO: Remover
+        debugLabirinto();
     }
 
     /**
@@ -140,4 +150,26 @@ public class Labirinto {
     public AdjListGraph<Divisao> getDivs() {
         return divs;
     }
+
+    //TODO: Remover
+    public void debugLabirinto() {
+        System.out.println("=== LABIRINTO CARREGADO ===");
+
+        for (Divisao divisao : divs) {
+            System.out.println("Divisão: " + divisao.getId() +
+                    " (" + divisao.getNome() + ") " +
+                    (divisao.isTemTesouro() ? "[TESOURO]" : ""));
+
+            if (divisao.getVizinhos().isEmpty()) {
+                System.out.println("  -> Sem corredores");
+            } else {
+                for (Corredor c : divisao.getVizinhos()) {
+                    System.out.println("  -> Conecta a: " + c.getDestino().getId());
+                }
+            }
+        }
+
+        System.out.println("============================\n");
+    }
+
 }

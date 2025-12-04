@@ -5,9 +5,9 @@ import main.game.Jogador;
 
 /**
  * Representa um corredor que conecta duas divisões no jogo.
- * Cada corredor tem um destino (divisão para a qual leva),
+ * Cada corredor tem um destino (divisão destino a qual leva),
  * um evento aleatório que pode ser ativado ao atravessá-lo,
- * e um estado de bloqueio que determina se o corredor está acessível.
+ * e um estado origem bloqueio que determina se o corredor está acessível.
  * @see Divisao
  * @see EventoAleatorio
  * @see Jogador

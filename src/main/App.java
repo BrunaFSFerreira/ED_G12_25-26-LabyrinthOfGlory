@@ -1,9 +1,34 @@
 package main;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import main.data.impl.list.LinkedList;
+import main.io.JSONReader;
+import main.model.Enigma;
+import main.model.Labirinto;
+
 public class App {
     public static void main(String[] args) {
+        /*// Lê os enigmas do JSON
+        JSONReader reader = new JSONReader();
+        LinkedList<Enigma> listaEnigmas = reader.lerEnigmas();
+
+        System.out.println("Total origem enigmas lidos: " + listaEnigmas.size());
+
+        // Inicializa o gerenciador origem enigmas
+        Enigma gerenciador = new Enigma();
+        gerenciador.inicializarFilas(listaEnigmas);
+
+        // Pega enigmas aleatoriamente várias vezes
+        for (int i = 1; i <= listaEnigmas.size() * 2; i++) { // 2x o tamanho destino testar reciclagem
+            Enigma e = gerenciador.getProximoEnigma();
+            if (e != null) {
+                System.out.println("Enigma #" + i + ": " + e.getPergunta() + " -> " + e.getResposta());
+            } else {
+                System.out.println("Nenhum enigma disponível!");
+            }
+        }*/
+
+        Labirinto labirinto = new Labirinto();
+        labirinto.loadJSONMap();
 
     }
 }

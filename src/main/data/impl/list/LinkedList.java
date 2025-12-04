@@ -1,13 +1,13 @@
 package main.data.impl.list;
 
+import main.data.adt.ListADT;
 import main.data.execption.ElementNotFoundExecption;
 import main.data.execption.EmptyCollectionExecption;
-import main.model.Divisao;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class LinkedList<T> extends Divisao implements Iterable<T>{
+public class LinkedList<T> implements ListADT<T>, Iterable<T>{
 
     private int count;
     private LinearNode<T> head, tail;
@@ -31,38 +31,14 @@ public class LinkedList<T> extends Divisao implements Iterable<T>{
         count++;
     }
 
-    public boolean isEmpty() {
-        return count == 0;
-    }
-
-    public int size() {
-        return count;
+    @Override
+    public T removeFirst() {
+        return null;
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new LinkedListIterator();
-    }
-
-    private class LinkedListIterator implements Iterator<T> {
-        private LinearNode<T> current = head;
-
-        @Override
-        public boolean hasNext() {
-            return current != null;
-        }
-        @Override
-        public T next() {
-            if (current == null) throw new NoSuchElementException();
-            T elem = current.getElement();
-            current = current.getNext();
-            return elem;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
+    public T removeLast() {
+        return null;
     }
 
     /**
@@ -72,7 +48,6 @@ public class LinkedList<T> extends Divisao implements Iterable<T>{
      * @throws EmptyCollectionExecption if the list is empty
      * @throws ElementNotFoundExecption if the specified element is not found in the list
      */
-    /*
     public T remove (T targetElement) throws EmptyCollectionExecption, ElementNotFoundExecption {
         if(isEmpty()) {
             throw new EmptyCollectionExecption("Linked List");
@@ -109,7 +84,55 @@ public class LinkedList<T> extends Divisao implements Iterable<T>{
         count--;
         return current.getElement();
     }
-    */
+
+    @Override
+    public T first() {
+        return null;
+    }
+
+    @Override
+    public T last() {
+        return null;
+    }
+
+    @Override
+    public boolean contains(T target) {
+        return false;
+    }
+
+    public boolean isEmpty() {
+        return count == 0;
+    }
+
+    public int size() {
+        return count;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new LinkedListIterator();
+    }
+
+    private class LinkedListIterator implements Iterator<T> {
+        private LinearNode<T> current = head;
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+        @Override
+        public T next() {
+            if (current == null) throw new NoSuchElementException();
+            T elem = current.getElement();
+            current = current.getNext();
+            return elem;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
 
     @Override
     public String toString() {
