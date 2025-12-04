@@ -2,45 +2,43 @@ package main.game;
 
 import main.data.impl.graph.WeightedGraph.AdjListGraph;
 import main.data.impl.list.DoubleLinkedUnorderedList;
-import main.model.Corredor;
-import main.model.Divisao;
-import main.model.Labirinto;
+import main.model.Hall;
+import main.model.Room;
+import main.model.Maze;
 
 import java.util.Iterator;
 
-public class Bot extends Jogador {
-    public Bot(String nome, Divisao posicaoInicial) {
-        super(nome, posicaoInicial);
+public class Bot extends Player {
+    public Bot(String name, Room startingPosition) {
+        super(name, startingPosition);
     }
 
     @Override
-    public Divisao escolherMovimento(Jogo jogo) {
-        Labirinto lab = jogo.getLabirinto();
-        AdjListGraph<Divisao> grafo = lab.getDivs();
-        DoubleLinkedUnorderedList<Divisao> tesouro = jogo.getLabirinto().getTesouros();
-        Divisao atual = getPosicaoAtual();
+    public Room chooseMovement(Game game) {
+        Maze lab = game.getMaze();
+        AdjListGraph<Room> graph = lab.getRooms();
+        DoubleLinkedUnorderedList<Room> treasure = game.getMaze().getTreasures();
+        Room current = getCurrentPosition();
 
-        if (tesouro != null) {
-            Iterator<Divisao> itTesouro = tesouro.iterator();
-            if (itTesouro.hasNext()) {
-                Divisao destino = itTesouro.next();
-                Iterator<Divisao> caminho = grafo.interatorShortestPath(atual, destino);
+        if (treasure != null) {
+            Iterator<Room> itTreasury = treasure.iterator();
+            if (itTreasury.hasNext()) {
+                Room destination = itTreasury.next();
+                Iterator<Room> path = graph.interatorShortestPath(current, destination);
 
-                if (caminho != null && caminho.hasNext()) {
-                    caminho.next();
-                    if (caminho.hasNext()) {
-                        return caminho.next();
+                if (path != null && path.hasNext()) {
+                    path.next();
+                    if (path.hasNext()) {
+                        return path.next();
                     }
                 }
             }
         }
 
-        Iterator<Corredor> vizinhos = atual.getVizinhos().iterator();
-        if (vizinhos.hasNext()) {
-            return vizinhos.next().getDestino();
+        Iterator<Hall> neighbors = current.getNeighbors().iterator();
+        if (neighbors.hasNext()) {
+            return neighbors.next().getDestination();
         }
         return null;
     }
-
-
 }

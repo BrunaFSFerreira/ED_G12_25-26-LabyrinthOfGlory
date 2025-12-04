@@ -1,0 +1,27 @@
+[
+  {
+    "rooms": [
+      { "id": "d1", "name": "Entrada" },
+      { "id": "d2", "name": "Sala A" },
+      { "id": "d3", "name": "Sala B" },
+      { "id": "d4", "name": "Tesouro" },
+      { "id": "d5", "name": "Armadilha" },
+      { "id": "d6", "name": "Sala C"},
+      { "id": "d7", "name": "Saída Secreta" },
+      { "id": "d8", "name": "Corredor Escuro" },
+      { "id": "d9", "name": "Caverna Subterrânea"}
+    ],
+    "halls": [
+      { "origin": "d1", "destination": "d2", "size": 5 },
+      { "origin": "d2", "destination": "d3", "size": 3 },
+      { "origin": "d3", "destination": "d4", "size": 4 },
+      { "origin": "d1", "destination": "d3", "size": 8},
+      { "origin": "d2", "destination": "d5", "size": 6 },
+      { "origin": "d5", "destination": "d6", "size": 2 },
+      { "origin": "d6", "destination": "d7", "size": 7 },
+      { "origin": "d3", "destination": "d8", "size": 5 },
+      { "origin": "d8", "destination": "d9", "size": 4 },
+      { "origin": "d9", "destination": "d7", "size": 6 }
+    ]
+  }
+]

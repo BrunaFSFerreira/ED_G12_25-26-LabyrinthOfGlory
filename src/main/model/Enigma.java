@@ -1,17 +1,16 @@
 package main.model;
 
-import main.data.impl.list.DoubleLinkedUnorderedList;
 import main.data.impl.list.LinkedList;
 import main.data.impl.queue.LinkedQueue;
 
 public class Enigma {
 
     private String idEnigma;
-    private String pergunta;
-    private String resposta;
+    private String question;
+    private String answer;
 
     LinkedQueue<Enigma> poll = new LinkedQueue<>();
-    LinkedQueue<Enigma> disponiveis = new LinkedQueue<>();
+    LinkedQueue<Enigma> available = new LinkedQueue<>();
 
     public Enigma() {
     }
@@ -20,63 +19,63 @@ public class Enigma {
         return idEnigma;
     }
 
-    public String getPergunta() {
-        return pergunta;
+    public String getQuestion() {
+        return question;
     }
 
-    public String getResposta() {
-        return resposta;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void inicializarFilas(LinkedList<Enigma> listaEnigmas) {
-        for (Enigma e : listaEnigmas) {
-            disponiveis.enqueue(e);
+    public void initializeQueues(LinkedList<Enigma> listEnigmas) {
+        for (Enigma e : listEnigmas) {
+            available.enqueue(e);
         }
     }
 
-    public Enigma getProximoEnigma() {
-        if (disponiveis.isEmpty()) {
-            reciclarEnigmas();
+    public Enigma getNextEnigma() {
+        if (available.isEmpty()) {
+            recycleEnigmas();
         }
-        if(disponiveis.isEmpty()) {
+        if(available.isEmpty()) {
             return null;
         }
 
-        int tamanho = disponiveis.size();
-        int indiceAleatorio = (int) (Math.random() * tamanho);
+        int size = available.size();
+        int randomId = (int) (Math.random() * size);
 
 
-        Enigma e = removerEnigmaPorIndice(disponiveis, indiceAleatorio);
+        Enigma e = removeEnigmaById(available, randomId);
         poll.enqueue(e);
 
         return e;
     }
 
-    private Enigma removerEnigmaPorIndice(LinkedQueue<Enigma> disponiveis, int indiceAleatorio) {
-        LinkedQueue<Enigma> listaEnigma = new LinkedQueue<>();
-        Enigma enigmaRemovido = null;
+    private Enigma removeEnigmaById(LinkedQueue<Enigma> available, int randomId) {
+        LinkedQueue<Enigma> listEnigma = new LinkedQueue<>();
+        Enigma removedEnigma = null;
         int i = 0;
 
-        while (!disponiveis.isEmpty()) {
-            Enigma e = disponiveis.dequeue();
-            if (i == indiceAleatorio) {
-                enigmaRemovido = e;
+        while (!available.isEmpty()) {
+            Enigma e = available.dequeue();
+            if (i == randomId) {
+                removedEnigma = e;
             } else {
-                listaEnigma.enqueue(e);
+                listEnigma.enqueue(e);
             }
             i++;
         }
 
-        while (!listaEnigma.isEmpty()) {
-            disponiveis.enqueue(listaEnigma.dequeue()); // Restaura os enigmas restantes
+        while (!listEnigma.isEmpty()) {
+            available.enqueue(listEnigma.dequeue()); // Restaura os enigmas restantes
         }
 
-        return enigmaRemovido;
+        return removedEnigma;
     }
 
-    private void reciclarEnigmas() {
+    private void recycleEnigmas() {
         while (!poll.isEmpty()) {
-            disponiveis.enqueue(poll.dequeue()); // Move todos os enigmas origem volta destino a fila origem disponíveis
+            available.enqueue(poll.dequeue()); // Move todos os enigmas origem volta destino a fila origem disponíveis
         }
     }
 

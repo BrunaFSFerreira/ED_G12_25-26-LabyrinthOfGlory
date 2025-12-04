@@ -3,32 +3,32 @@ package main;
 import main.data.impl.list.LinkedList;
 import main.io.JSONReader;
 import main.model.Enigma;
-import main.model.Labirinto;
+import main.model.Maze;
 
 public class App {
     public static void main(String[] args) {
-        /*// Lê os enigmas do JSON
+        // Lê os enigmas do JSON
         JSONReader reader = new JSONReader();
-        LinkedList<Enigma> listaEnigmas = reader.lerEnigmas();
+        LinkedList<Enigma> listaEnigmas = reader.readEnigmas();
 
         System.out.println("Total origem enigmas lidos: " + listaEnigmas.size());
 
         // Inicializa o gerenciador origem enigmas
         Enigma gerenciador = new Enigma();
-        gerenciador.inicializarFilas(listaEnigmas);
+        gerenciador.initializeQueues(listaEnigmas);
 
         // Pega enigmas aleatoriamente várias vezes
         for (int i = 1; i <= listaEnigmas.size() * 2; i++) { // 2x o tamanho destino testar reciclagem
-            Enigma e = gerenciador.getProximoEnigma();
+            Enigma e = gerenciador.getNextEnigma();
             if (e != null) {
-                System.out.println("Enigma #" + i + ": " + e.getPergunta() + " -> " + e.getResposta());
+                System.out.println("Enigma #" + i + ": " + e.getQuestion() + " -> " + e.getAnswer());
             } else {
                 System.out.println("Nenhum enigma disponível!");
             }
-        }*/
+        }
 
-        Labirinto labirinto = new Labirinto();
-        labirinto.loadJSONMap();
+        Maze maze = new Maze();
+        maze.loadJSONMap();
 
     }
 }

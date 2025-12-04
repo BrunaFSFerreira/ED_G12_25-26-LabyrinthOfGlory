@@ -11,19 +11,19 @@ import main.model.Enigma;
 public class JSONReader {
 
     private final String enigmaFilePath;
-    private final String mapaFilePath;
+    private final String mapFilePath;
 
     public JSONReader() {
-        this("resource-files/enigmas.json", "resource-files/mapas.json");
+        this("resource-files/puzzle.json", "resource-files/maps.json");
     }
 
-    public JSONReader(String enigmaFilePath, String mapaFilePath) {
+    public JSONReader(String enigmaFilePath, String mapFilePath) {
         this.enigmaFilePath = enigmaFilePath;
-        this.mapaFilePath = mapaFilePath;
+        this.mapFilePath = mapFilePath;
     }
 
     //TODO: Aletarar para LinkedOrderedList
-    public LinkedList<Enigma> lerEnigmas() {
+    public LinkedList<Enigma> readEnigmas() {
         LinkedList<Enigma> enigmas = new LinkedList<>();
 
         try (FileReader reader = new FileReader(enigmaFilePath)) {
@@ -31,8 +31,8 @@ public class JSONReader {
             Enigma[] arrayTemp = gson.fromJson(reader, Enigma[].class);
 
             for (Enigma e : arrayTemp) {
-                if (e.getIdEnigma() == null || e.getIdEnigma().isEmpty() || e.getPergunta() == null || e.getPergunta().isEmpty() || e.getResposta() == null || e.getResposta().isEmpty()) {
-                    System.out.println("Enigma inválido encontrado: " + e);
+                if (e.getIdEnigma() == null || e.getIdEnigma().isEmpty() || e.getQuestion() == null || e.getQuestion().isEmpty() || e.getAnswer() == null || e.getAnswer().isEmpty()) {
+                    System.out.println("Enigma Invalid found: " + e);
                     continue;
                 } else {
                     enigmas.add(e);
@@ -40,7 +40,7 @@ public class JSONReader {
             }
 
         } catch (JsonSyntaxException e) {
-            System.out.println("JSON mal formado: " + e.getMessage());
+            System.out.println("Poorly structured JSON: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,88 +48,88 @@ public class JSONReader {
         return enigmas;
     }
 
-    public static class MapaDTO {
-        public DoubleLinkedUnorderedList<DivisaoDTO> divisoes = new DoubleLinkedUnorderedList<>();
-        public DoubleLinkedUnorderedList<CorredorDTO> corredores = new DoubleLinkedUnorderedList<>();
+    public static class MapDTO {
+        public DoubleLinkedUnorderedList<RoomDTO> rooms = new DoubleLinkedUnorderedList<>();
+        public DoubleLinkedUnorderedList<HallDTO> halls = new DoubleLinkedUnorderedList<>();
     }
 
-    public static class DivisaoDTO {
+    public static class RoomDTO {
         public String id;
-        public String nome;
-        public boolean temTesouro;
+        public String name;
+        public boolean hasTreasure;
     }
 
-    public static class CorredorDTO {
-        public String origem;
-        public String destino;
-        public int tamanho;
+    public static class HallDTO {
+        public String origin;
+        public String destination;
+        public int size;
     }
 
-    public DoubleLinkedUnorderedList<MapaDTO> lerMapa() {
-        DoubleLinkedUnorderedList<MapaDTO> mapas = new DoubleLinkedUnorderedList<>();
+    public DoubleLinkedUnorderedList<MapDTO> writeMapa() {
+        DoubleLinkedUnorderedList<MapDTO> maps = new DoubleLinkedUnorderedList<>();
 
         try {
-            JsonArray rootArray = JsonParser.parseReader(new FileReader(mapaFilePath)).getAsJsonArray();
+            JsonArray rootArray = JsonParser.parseReader(new FileReader(mapFilePath)).getAsJsonArray();
             if (rootArray.size() == 0) {
-                throw new IllegalStateException("JSON origem mapa inválido: Nenhum mapa encontrado.");
+                throw new IllegalStateException("No maps found.");
             }
 
             for (JsonElement mapaElement : rootArray) {
                 JsonObject root = mapaElement.getAsJsonObject();
-                MapaDTO mapaDTO = new MapaDTO();
+                MapDTO mapDTO = new MapDTO();
 
                 //Validar Divisões
-                JsonArray divsJson = root.getAsJsonArray("divisoes");
-                if (divsJson == null || divsJson.isEmpty()) {
-                    throw new IllegalStateException("JSON origem mapa inválido: Nenhuma divisão encontrada.");
+                JsonArray roomsJson = root.getAsJsonArray("rooms");
+                if (roomsJson == null || roomsJson.isEmpty()) {
+                    throw new IllegalStateException("No rooms found.");
                 }
 
-                for (JsonElement div : divsJson) {
-                    JsonObject divObj = div.getAsJsonObject();
+                for (JsonElement room : roomsJson) {
+                    JsonObject roomObj = room.getAsJsonObject();
 
-                    if (!divObj.has("id") || !divObj.has("nome")) {
-                        System.out.println("Divisão inválida encontrada: " + divObj);
+                    if (!roomObj.has("id") || !roomObj.has("name")) {
+                        System.out.println("Found Invalid Room: " + roomObj);
                         continue;
                     }
 
-                    DivisaoDTO divisaoDTO = new DivisaoDTO();
-                    divisaoDTO.id = divObj.get("id").getAsString();
-                    divisaoDTO.nome = divObj.get("nome").getAsString();
-                    if (divObj.has("temTesouro")) {
-                        divisaoDTO.temTesouro = divObj.get("temTesouro").getAsBoolean();
+                    RoomDTO roomDTO = new RoomDTO();
+                    roomDTO.id = roomObj.get("id").getAsString();
+                    roomDTO.name = roomObj.get("name").getAsString();
+                    if (roomObj.has("hasTreasure")) {
+                        roomDTO.hasTreasure = roomObj.get("hasTreasure").getAsBoolean();
                     } else {
-                        divisaoDTO.temTesouro = false;
+                        roomDTO.hasTreasure = false;
                     }
-                    mapaDTO.divisoes.addToRear(divisaoDTO);
+                    mapDTO.rooms.addToRear(roomDTO);
                 }
 
                 //Validar Corredores
-                JsonArray corsJson = root.getAsJsonArray("corredores");
-                if (corsJson == null || corsJson.isEmpty()) {
-                    throw new IllegalStateException("JSON origem mapa inválido: Nenhum corredor encontrado.");
+                JsonArray hallJson = root.getAsJsonArray("halls");
+                if (hallJson == null || hallJson.isEmpty()) {
+                    throw new IllegalStateException("No halls found.");
                 }
-                for (JsonElement cor : corsJson) {
-                    JsonObject corObj = cor.getAsJsonObject();
+                for (JsonElement hall : hallJson) {
+                    JsonObject hallObj = hall.getAsJsonObject();
 
-                    if (!corObj.has("origem") || !corObj.has("destino") || !corObj.has("tamanho")) {
-                        System.out.println("Corredor inválido encontrado: " + corObj);
+                    if (!hallObj.has("origin") || !hallObj.has("destination") || !hallObj.has("size")) {
+                        System.out.println("Invalid Hall found: " + hallObj);
                         continue;
                     }
 
-                    CorredorDTO corredorDTO = new CorredorDTO();
-                    corredorDTO.origem = corObj.get("origem").getAsString();
-                    corredorDTO.destino = corObj.get("destino").getAsString();
-                    corredorDTO.tamanho = corObj.get("tamanho").getAsInt();
-                    mapaDTO.corredores.addToRear(corredorDTO);
+                    HallDTO hallDTO = new HallDTO();
+                    hallDTO.origin = hallObj.get("origin").getAsString();
+                    hallDTO.destination = hallObj.get("destination").getAsString();
+                    hallDTO.size = hallObj.get("size").getAsInt();
+                    mapDTO.halls.addToRear(hallDTO);
                 }
 
-                mapas.addToRear(mapaDTO);
+                maps.addToRear(mapDTO);
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao ler o arquivo origem mapa: " + e.getMessage(), e);
+            throw new RuntimeException("Error reading the map: " + e.getMessage(), e);
         }
 
-        return mapas;
+        return maps;
     }
 }
