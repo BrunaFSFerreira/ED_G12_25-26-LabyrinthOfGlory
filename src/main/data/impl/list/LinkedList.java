@@ -7,38 +7,49 @@ import main.data.execption.EmptyCollectionExecption;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class LinkedList<T> implements ListADT<T>, Iterable<T>{
-
-    private int count;
-    private LinearNode<T> head, tail;
+public class LinkedList<T> implements ListADT<T> {
+    protected int count;
+    protected LinearNode<T> head, tail;
 
     public LinkedList() {
         count = 0;
         head = tail = null;
     }
 
-    public void add (T element) {
-        LinearNode<T> newNode = new LinearNode<T>(element);
-
-        if (head == null) {
-            head = tail = newNode;
-        } else {
-            tail.setNext(newNode);
-            tail = newNode;
-
-        }
-
-        count++;
-    }
-
     @Override
     public T removeFirst() {
-        return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException("Lista vazia");
+        }
+        T result = head.getElement();
+        head = head.getNext();
+        if (head == null) {
+            tail = null;
+        }
+        count--;
+        return result;
     }
 
     @Override
     public T removeLast() {
-        return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException("Lista vazia");
+        }
+        if (head == tail) {
+            T result = head.getElement();
+            head = tail = null;
+            count = 0;
+            return result;
+        }
+        LinearNode<T> current = head;
+        while (current.getNext() != tail) {
+            current = current.getNext();
+        }
+        T result = tail.getElement();
+        tail = current;
+        tail.setNext(null);
+        count--;
+        return result;
     }
 
     /**
@@ -87,16 +98,30 @@ public class LinkedList<T> implements ListADT<T>, Iterable<T>{
 
     @Override
     public T first() {
-        return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException("Lista vazia");
+        }
+        return head.getElement();
     }
 
     @Override
     public T last() {
-        return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException("Lista vazia");
+        }
+        return tail.getElement();
     }
 
     @Override
     public boolean contains(T target) {
+        LinearNode<T> current = head;
+        while (current != null) {
+            T el = current.getElement();
+            if ((target == null && el == null) || (target != null && target.equals(el))) {
+                return true;
+            }
+            current = current.getNext();
+        }
         return false;
     }
 
@@ -120,17 +145,13 @@ public class LinkedList<T> implements ListADT<T>, Iterable<T>{
         public boolean hasNext() {
             return current != null;
         }
+
         @Override
         public T next() {
             if (current == null) throw new NoSuchElementException();
             T elem = current.getElement();
             current = current.getNext();
             return elem;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
         }
     }
 
@@ -145,5 +166,4 @@ public class LinkedList<T> implements ListADT<T>, Iterable<T>{
         }
         return result;
     }
-
 }

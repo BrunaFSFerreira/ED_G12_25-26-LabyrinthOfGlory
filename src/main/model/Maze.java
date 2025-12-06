@@ -1,8 +1,8 @@
 package main.model;
 
 import main.data.impl.graph.WeightedGraph.AdjListGraph;
-import main.data.impl.list.DoubleLinkedList;
 import main.data.impl.list.DoubleLinkedUnorderedList;
+import main.data.impl.list.LinkedUnorderedList;
 import main.io.JSONReader;
 
 public class Maze {
@@ -71,7 +71,7 @@ public class Maze {
 
     public void loadJSONMap() {
         JSONReader reader = new JSONReader();
-        DoubleLinkedList<JSONReader.MapDTO> maps = new JSONReader().writeMapa();
+        LinkedUnorderedList<JSONReader.MapDTO> maps = new JSONReader().writeMapa();
 
         JSONReader.MapDTO map = maps.first();
 

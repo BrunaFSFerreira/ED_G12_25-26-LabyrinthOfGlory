@@ -1,12 +1,12 @@
 package main.model;
 
-import main.data.impl.list.DoubleLinkedUnorderedList;
+import main.data.impl.list.LinkedUnorderedList;
 
 public abstract class Room {
 
     private String id;
     private String name;
-    private final DoubleLinkedUnorderedList<Hall> neighbors = new DoubleLinkedUnorderedList<>();
+    private final LinkedUnorderedList<Hall> neighbors = new LinkedUnorderedList<>();
     private boolean hasTreasure;
     private boolean resolved;
 
@@ -50,7 +50,7 @@ public abstract class Room {
         this.resolved = resolved;
     }
 
-    public DoubleLinkedUnorderedList<Hall> getNeighbors() {
+    public LinkedUnorderedList<Hall> getNeighbors() {
         return neighbors;
     }
 }

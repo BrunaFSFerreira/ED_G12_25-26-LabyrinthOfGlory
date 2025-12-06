@@ -4,8 +4,7 @@ import com.google.gson.*;
 
 import java.io.FileReader;
 
-import main.data.impl.list.DoubleLinkedUnorderedList;
-import main.data.impl.list.LinkedList;
+import main.data.impl.list.LinkedUnorderedList;
 import main.model.Enigma;
 
 public class JSONReader {
@@ -22,9 +21,8 @@ public class JSONReader {
         this.mapFilePath = mapFilePath;
     }
 
-    //TODO: Aletarar para LinkedOrderedList
-    public LinkedList<Enigma> readEnigmas() {
-        LinkedList<Enigma> enigmas = new LinkedList<>();
+    public LinkedUnorderedList<Enigma> readEnigmas() {
+        LinkedUnorderedList<Enigma> enigmas = new LinkedUnorderedList<>();
 
         try (FileReader reader = new FileReader(enigmaFilePath)) {
             Gson gson = new Gson();
@@ -35,7 +33,7 @@ public class JSONReader {
                     System.out.println("Enigma Invalid found: " + e);
                     continue;
                 } else {
-                    enigmas.add(e);
+                    enigmas.addToRear(e);
                 }
             }
 
@@ -49,8 +47,8 @@ public class JSONReader {
     }
 
     public static class MapDTO {
-        public DoubleLinkedUnorderedList<RoomDTO> rooms = new DoubleLinkedUnorderedList<>();
-        public DoubleLinkedUnorderedList<HallDTO> halls = new DoubleLinkedUnorderedList<>();
+        public LinkedUnorderedList<RoomDTO> rooms = new LinkedUnorderedList<>();
+        public LinkedUnorderedList<HallDTO> halls = new LinkedUnorderedList<>();
     }
 
     public static class RoomDTO {
@@ -65,8 +63,8 @@ public class JSONReader {
         public int size;
     }
 
-    public DoubleLinkedUnorderedList<MapDTO> writeMapa() {
-        DoubleLinkedUnorderedList<MapDTO> maps = new DoubleLinkedUnorderedList<>();
+    public LinkedUnorderedList<MapDTO> writeMapa() {
+        LinkedUnorderedList<MapDTO> maps = new LinkedUnorderedList<>();
 
         try {
             JsonArray rootArray = JsonParser.parseReader(new FileReader(mapFilePath)).getAsJsonArray();
