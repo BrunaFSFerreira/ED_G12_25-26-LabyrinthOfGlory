@@ -40,10 +40,5 @@ public class LeverRoom extends Room {
         hallsToUnlock.addToRear(hall);
     }
 
-    @Override
-    public boolean isPassable() {
-        return isResolved();
-    }
-
 
 }

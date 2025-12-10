@@ -10,6 +10,9 @@ public abstract class Room {
     private boolean hasTreasure;
     private boolean resolved;
 
+    private int x;
+    private int y;
+
     public Room() {}
 
     public Room(String id, String name, boolean hasTreasure) {
@@ -40,6 +43,22 @@ public abstract class Room {
 
     public void setHasTreasure(boolean hasTreasure) {
         this.hasTreasure = hasTreasure;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public boolean isResolved() {

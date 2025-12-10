@@ -5,6 +5,7 @@ import main.data.impl.queue.LinkedQueue;
 import main.model.*;
 import main.utils.EventType;
 
+import java.util.List;
 import java.util.Random;
 
 public class Game {
@@ -164,6 +165,33 @@ public class Game {
 
     public Maze getMaze() {
         return maze;
+    }
+
+
+    public void addPlayers(List<Player> players) {
+
+        if (players == null || players.isEmpty()) return;
+
+        DoubleLinkedUnorderedList<Room> entries = maze.getEntries();
+        java.util.Iterator<Room> itEntries = entries.iterator();
+        java.util.Iterator<Room> roomsIt = maze.getRooms().iterator();
+        Room fallback = roomsIt.hasNext() ? roomsIt.next() : null;
+
+        for (Player p : players) {
+            if (p == null) continue;
+
+            // assign starting position from entries (round-robin) or fallback
+            Room start = itEntries.hasNext() ? itEntries.next() : fallback;
+            p.setCurrentPosition(start);
+            p.setBlockedShifts(0);
+
+            // add to collections and queue
+            allPlayers.addToRear(p);
+            queueShifts.enqueue(p);
+
+            System.out.println("Added player: " + p.getName() + " starting at " +
+                    (start != null ? start.getName() : "<none>"));
+        }
     }
 }
 

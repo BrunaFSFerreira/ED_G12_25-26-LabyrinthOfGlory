@@ -55,6 +55,11 @@ public class JSONReader {
         public String id;
         public String name;
         public boolean hasTreasure;
+        public String type;
+        public int x;
+        public int y;
+        public String enigmaId;
+        public Integer correctLeverId;
     }
 
     public static class HallDTO {
@@ -63,7 +68,7 @@ public class JSONReader {
         public int size;
     }
 
-    public LinkedUnorderedList<MapDTO> writeMapa() {
+    public LinkedUnorderedList<MapDTO> writeMap() {
         LinkedUnorderedList<MapDTO> maps = new LinkedUnorderedList<>();
 
         try {
@@ -72,11 +77,10 @@ public class JSONReader {
                 throw new IllegalStateException("No maps found.");
             }
 
-            for (JsonElement mapaElement : rootArray) {
-                JsonObject root = mapaElement.getAsJsonObject();
+            for (JsonElement mapElement : rootArray) {
+                JsonObject root = mapElement.getAsJsonObject();
                 MapDTO mapDTO = new MapDTO();
 
-                //Validar Divisões
                 JsonArray roomsJson = root.getAsJsonArray("rooms");
                 if (roomsJson == null || roomsJson.isEmpty()) {
                     throw new IllegalStateException("No rooms found.");
@@ -93,11 +97,28 @@ public class JSONReader {
                     RoomDTO roomDTO = new RoomDTO();
                     roomDTO.id = roomObj.get("id").getAsString();
                     roomDTO.name = roomObj.get("name").getAsString();
+
                     if (roomObj.has("hasTreasure")) {
                         roomDTO.hasTreasure = roomObj.get("hasTreasure").getAsBoolean();
                     } else {
                         roomDTO.hasTreasure = false;
                     }
+                    if (roomObj.has("type")) {
+                        roomDTO.type = roomObj.get("type").getAsString();
+                    } else {
+                        roomDTO.type = "normal";
+                    }
+
+                    if (roomObj.has("x")) roomDTO.x = roomObj.get("x").getAsInt();
+                    if (roomObj.has("y")) roomDTO.y = roomObj.get("y").getAsInt();
+
+                    if (roomObj.has("enigmaId")) {
+                        roomDTO.enigmaId = roomObj.get("enigmaId").getAsString();
+                    }
+                    if (roomObj.has("correctLeverId") && roomObj.get("correctLeverId").isJsonPrimitive()) {
+                        roomDTO.correctLeverId = roomObj.get("correctLeverId").getAsInt();
+                    }
+
                     mapDTO.rooms.addToRear(roomDTO);
                 }
 

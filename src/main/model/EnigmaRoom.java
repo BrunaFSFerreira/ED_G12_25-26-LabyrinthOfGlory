@@ -31,8 +31,4 @@ public class EnigmaRoom extends Room {
         return false;
     }
 
-    @Override
-    public boolean isPassable() {
-        return isResolved();
-    }
 }
