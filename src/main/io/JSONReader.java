@@ -6,6 +6,7 @@ import java.io.FileReader;
 
 import main.data.impl.list.LinkedUnorderedList;
 import main.model.Enigma;
+import main.utils.RoomType;
 
 public class JSONReader {
 
@@ -55,7 +56,7 @@ public class JSONReader {
         public String id;
         public String name;
         public boolean hasTreasure;
-        public String type;
+        public RoomType type;
         public int x;
         public int y;
         public String enigmaId;
@@ -104,9 +105,13 @@ public class JSONReader {
                         roomDTO.hasTreasure = false;
                     }
                     if (roomObj.has("type")) {
-                        roomDTO.type = roomObj.get("type").getAsString();
+                        try {
+                            roomDTO.type = RoomType.valueOf(roomObj.get("type").getAsString().toUpperCase());
+                        } catch (Exception e) {
+                            roomDTO.type = RoomType.NORMAL;
+                        }
                     } else {
-                        roomDTO.type = "normal";
+                        roomDTO.type = RoomType.NORMAL;
                     }
 
                     if (roomObj.has("x")) roomDTO.x = roomObj.get("x").getAsInt();

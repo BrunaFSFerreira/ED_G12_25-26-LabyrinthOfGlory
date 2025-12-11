@@ -2,6 +2,7 @@ package main.model;
 
 import main.data.impl.list.LinkedUnorderedList;
 import main.game.Player;
+import main.utils.RoomType;
 
 public class LeverRoom extends Room {
 
@@ -9,7 +10,7 @@ public class LeverRoom extends Room {
     private final LinkedUnorderedList<Hall> hallsToUnlock;
 
     public LeverRoom(String id, String name, boolean hasTreasure, int correctLeverId) {
-        super(id, name, hasTreasure);
+        super(id, name, hasTreasure, RoomType.LEVER);
         this.correctLeverId = correctLeverId;
         this.hallsToUnlock = new LinkedUnorderedList<>();
     }

@@ -33,12 +33,21 @@ public class App {
         maze.loadJSONMap();
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Number of players: ");
         int numPlayers = 1;
-        try {
-            numPlayers = Integer.parseInt(scanner.nextLine().trim());
-            if (numPlayers < 1) numPlayers = 1;
-        } catch (NumberFormatException ignored) {}
+        while (true) {
+            System.out.print("Number of players (1-5): ");
+            String line = scanner.nextLine().trim();
+            try {
+                numPlayers = Integer.parseInt(line);
+                if (numPlayers >= 1 && numPlayers <= 5) {
+                    break;
+                } else {
+                    System.out.println("Please, insert a number between 1 and 5.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid entry, insert a number between 1 and 5");
+            }
+        }
 
         ArrayUnorderedList<Player> players = new ArrayUnorderedList<>();
         for (int p = 1; p <= numPlayers; p++) {

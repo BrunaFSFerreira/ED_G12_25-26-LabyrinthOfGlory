@@ -43,17 +43,7 @@ public class Maze {
     public DoubleLinkedUnorderedList<Room> getEntries() {
         DoubleLinkedUnorderedList<Room> entries = new DoubleLinkedUnorderedList<>();
         for (Room room : rooms) {
-            boolean isEntry = true;
-            for (Room neighbor : rooms) {
-                for (Hall hall : neighbor.getNeighbors()) {
-                    if (hall.getDestination().equals(room)) {
-                        isEntry = false;
-                        break;
-                    }
-                }
-                if (!isEntry) break;
-            }
-            if (isEntry) {
+            if (room.getType() == RoomType.ENTRANCE) {
                 entries.addToRear(room);
             }
         }
@@ -85,7 +75,7 @@ public class Maze {
             Room room;
             RoomType type;
             try {
-                type = RoomType.valueOf(roomDTO.type.toUpperCase());
+                type = RoomType.valueOf(roomDTO.type.name());
             } catch (Exception e) {
                 type = RoomType.NORMAL;
             }
@@ -106,7 +96,7 @@ public class Maze {
                 default:
                     // Cria Room genérica
                     // Note: Room is abstract, so it's instantiated as an anonymous subclass here.
-                    room = new Room(roomDTO.id, roomDTO.name, roomDTO.hasTreasure) {};
+                    room = new Room(roomDTO.id, roomDTO.name, roomDTO.hasTreasure, roomDTO.type ) {};
                     break;
             }
 

@@ -11,9 +11,9 @@
         { "id": "r7",  "name": "Câmara das Alavancas",    "type": "LEVER",     "x": 1, "y": 1, "correctLeverId": 3 },
         { "id": "r8",  "name": "Forja Esquecida",         "type": "NORMAL",    "x": 2, "y": 1 },
         { "id": "r9",  "name": "Arquivo Sombrio",         "type": "PUZZLE",    "x": 3, "y": 1, "enigmaId": "e7" },
-        { "id": "r10", "name": "Entrada Oeste",           "type": "ENTRACE",    "x": 4, "y": 1 },
+        { "id": "r10", "name": "Entrada Oeste",           "type": "ENTRANCE",    "x": 4, "y": 1 },
 
-        { "id": "r11", "name": "Entrada Este",            "type": "ENTRACE",    "x": 0, "y": 2 },
+        { "id": "r11", "name": "Entrada Este",            "type": "ENTRANCE",    "x": 0, "y": 2 },
         { "id": "r12", "name": "Sala do Cristal",         "type": "TREASURE",  "x": 1, "y": 2, "hasTreasure": true },
         { "id": "r13", "name": "Poço Antigo",             "type": "NORMAL",    "x": 2, "y": 2 },
         { "id": "r14", "name": "Câmara do Guardião",      "type": "LEVER",     "x": 3, "y": 2, "correctLeverId": 1 },

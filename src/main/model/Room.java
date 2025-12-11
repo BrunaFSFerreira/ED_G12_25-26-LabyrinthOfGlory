@@ -1,6 +1,7 @@
 package main.model;
 
 import main.data.impl.list.LinkedUnorderedList;
+import main.utils.RoomType;
 
 public abstract class Room {
 
@@ -9,16 +10,18 @@ public abstract class Room {
     private final LinkedUnorderedList<Hall> neighbors = new LinkedUnorderedList<>();
     private boolean hasTreasure;
     private boolean resolved;
+    private RoomType type;
 
     private int x;
     private int y;
 
     public Room() {}
 
-    public Room(String id, String name, boolean hasTreasure) {
+    public Room(String id, String name, boolean hasTreasure, RoomType type) {
         this.id = id;
         this.name = name;
         this.hasTreasure = hasTreasure;
+        this.type = type;
     }
 
     public String getId() {
@@ -37,12 +40,32 @@ public abstract class Room {
         this.name = name;
     }
 
+    public LinkedUnorderedList<Hall> getNeighbors() {
+        return neighbors;
+    }
+
     public boolean isHasTreasure() {
         return hasTreasure;
     }
 
     public void setHasTreasure(boolean hasTreasure) {
         this.hasTreasure = hasTreasure;
+    }
+
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public void setResolved(boolean resolved) {
+        this.resolved = resolved;
+    }
+
+    public RoomType getType() {
+        return type;
+    }
+
+    public void setType(RoomType type) {
+        this.type = type;
     }
 
     public int getX() {
@@ -59,17 +82,5 @@ public abstract class Room {
 
     public void setY(int y) {
         this.y = y;
-    }
-
-    public boolean isResolved() {
-        return resolved;
-    }
-
-    public void setResolved(boolean resolved) {
-        this.resolved = resolved;
-    }
-
-    public LinkedUnorderedList<Hall> getNeighbors() {
-        return neighbors;
     }
 }

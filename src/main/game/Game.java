@@ -5,8 +5,7 @@ import main.data.impl.list.DoubleLinkedUnorderedList;
 import main.data.impl.queue.LinkedQueue;
 import main.model.*;
 
-import java.util.Random;
-import java.util.Iterator;
+import java.util.*;
 
 public class Game {
 
@@ -167,25 +166,72 @@ public class Game {
         return maze;
     }
 
-
     public void addPlayers(ArrayUnorderedList<Player> players) {
 
         if (players == null || players.isEmpty()) return;
 
         DoubleLinkedUnorderedList<Room> entries = maze.getEntries();
-        Iterator<Room> itEntries = entries.iterator();
+        List<Room> entriesList = new ArrayList<>();
+        for (Room r : entries) entriesList.add(r);
+
         Iterator<Room> roomsIt = maze.getRooms().iterator();
         Room fallback = roomsIt.hasNext() ? roomsIt.next() : null;
+
+        Scanner scanner = new Scanner(System.in);
+
+        int roundIndex = 0;
 
         for (Player p : players) {
             if (p == null) continue;
 
-            // assign starting position from entries (round-robin) or fallback
-            Room start = itEntries.hasNext() ? itEntries.next() : fallback;
+            Room start = null;
+
+            if (entriesList.isEmpty()) {
+                start = fallback;
+            } else if (p instanceof Bot) {
+                start = entriesList.get(roundIndex % entriesList.size());
+                roundIndex++;
+            } else {
+                System.out.println("\nEntrances: ");
+                for (int i = 0; i < entriesList.size(); i++) {
+                    Room r = entriesList.get(i);
+                    System.out.println((i + 1) + ") " + r.getName() + " (" + r.getId() + ")");
+                }
+                System.out.println("Select an entrance: ");
+                String line = scanner.nextLine().trim();
+
+
+                try {
+                    int choice = Integer.parseInt(line);
+                    if (choice >= 1 && choice <= entriesList.size()) {
+                        start = entriesList.get(choice - 1);
+                    } else {
+                        System.out.println("Invalid option. Using default.");
+                        start = entriesList.get(roundIndex % entriesList.size());
+                        roundIndex++;
+                    }
+                } catch (NumberFormatException ex) {
+                    Room matched = null;
+                    for (Room r : entriesList) {
+                        if (r.getId().equalsIgnoreCase(line)) {
+                            matched = r;
+                            break;
+                        }
+                    }
+                    if (matched != null) {
+                        start = matched;
+                    } else {
+                        System.out.println("Invalid option. Using default.");
+                        start = entriesList.get(roundIndex % entriesList.size());
+                        roundIndex++;
+                    }
+                }
+            }
+
+
             p.setCurrentPosition(start);
             p.setBlockedShifts(0);
 
-            // add to collections and queue
             allPlayers.addToRear(p);
             queueShifts.enqueue(p);
 
@@ -193,5 +239,6 @@ public class Game {
                     (start != null ? start.getName() : "<none>"));
         }
     }
+
 }
 
