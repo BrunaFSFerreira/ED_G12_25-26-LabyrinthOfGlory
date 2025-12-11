@@ -3,7 +3,6 @@ package main;
 import main.data.impl.list.ArrayUnorderedList;
 import main.data.impl.list.DoubleLinkedUnorderedList;
 import main.data.impl.list.LinkedList;
-import main.data.impl.list.LinkedOrderedList;
 import main.game.Bot;
 import main.game.Game;
 import main.game.HumanPlayer;
@@ -21,7 +20,6 @@ public class App {
         Enigma menager = new Enigma();
         menager.initializeQueues(listaEnigmas);
 
-        // Pega enigmas aleatoriamente várias vezes
         for (int i = 1; i <= listaEnigmas.size() * 2; i++) {
             Enigma e = menager.getNextEnigma();
             if (e != null) {
@@ -45,7 +43,7 @@ public class App {
                     System.out.println("Please, insert a number between 1 and 5.");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid entry, insert a number between 1 and 5");
+                System.out.println("Invalid entry insert a number between 1 and 5");
             }
         }
 

@@ -8,6 +8,7 @@ public abstract class Player {
     private Room currentPosition;
     private int blockedShifts;
     private final DoubleLinkedUnorderedList<String> historicalActions;
+    private Room initialPosition;
 
     public Player(String name, Room startingPosition) {
         this.name = name;
@@ -21,7 +22,13 @@ public abstract class Player {
     public void setCurrentPosition(Room newPosition) { this.currentPosition = newPosition; }
     public int getBlockedShifts() { return blockedShifts; }
     public void setBlockedShifts(int shifts) { this.blockedShifts = shifts; }
-    public DoubleLinkedUnorderedList<String> getHistoricalActions() { return historicalActions; }
+    public DoubleLinkedUnorderedList<String> getHistoricalActions() { return historicalActions; }    public void setInitialPosition(Room initialPosition) {
+        this.initialPosition = initialPosition;
+    }
+
+    public Room getInitialPosition() {
+        return initialPosition;
+    }
 
     public void addActionToHistory(String action) {
         this.historicalActions.addToRear(action);

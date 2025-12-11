@@ -5,6 +5,5 @@ public enum RoomType {
     NORMAL,
     LEVER,
     PUZZLE,
-    TREASURE,
-    EXIT
+    TREASURE
 }

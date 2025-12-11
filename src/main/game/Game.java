@@ -65,6 +65,18 @@ public class Game {
         }
     }
 
+    public void endGame(Player winner) {
+        if (winner == null) return;
+        this.winner = winner;
+        winner.addActionToHistory("WON: entered treasure room " +
+                (winner.getCurrentPosition() != null ? winner.getCurrentPosition().getId() : "<unknown>"));
+        System.out.println("GAME OVER. Winner: " + winner.getName());
+        // Esvazia a fila de turnos para garantir que o loop termine
+        while (queueShifts.size() > 0) {
+            queueShifts.dequeue();
+        }
+    }
+
     private boolean processBlock(Player active) {
         if (active.getBlockedShifts() > 0) {
             active.setBlockedShifts(active.getBlockedShifts() - 1);
@@ -230,6 +242,7 @@ public class Game {
 
 
             p.setCurrentPosition(start);
+            p.setInitialPosition(start);
             p.setBlockedShifts(0);
 
             allPlayers.addToRear(p);

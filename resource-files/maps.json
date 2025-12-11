@@ -1,62 +1,76 @@
 [
-    {
-      "rooms": [
-        { "id": "r1",  "name": "Entrada",                 "type": "ENTRANCE", "x": 0, "y": 0 },
-        { "id": "r2",  "name": "Câmara Antiga",           "type": "NORMAL",    "x": 1, "y": 0 },
-        { "id": "r3",  "name": "Sala das Runas",          "type": "PUZZLE",    "x": 2, "y": 0, "enigmaId": "e12" },
-        { "id": "r4",  "name": "Biblioteca Perdida",      "type": "NORMAL",    "x": 3, "y": 0 },
-        { "id": "r5",  "name": "Altar Dourado",           "type": "TREASURE",  "x": 4, "y": 0, "hasTreasure": true },
+  {
+    "rooms": [
+      { "id": "r1",  "name": "Entrance",                 "type": "ENTRANCE", "x": 0, "y": 0 },
+      { "id": "r2",  "name": "Ancient Chamber",          "type": "NORMAL",    "x": 1, "y": 0 },
+      { "id": "r3",  "name": "Rune Hall",                "type": "PUZZLE",    "x": 2, "y": 0, "enigmaId": "e12" },
+      { "id": "r4",  "name": "Lost Library",             "type": "NORMAL",    "x": 3, "y": 0 },
+      { "id": "r5",  "name": "Golden Altar",             "type": "NORMAL",    "x": 4, "y": 0 },
 
-        { "id": "r6",  "name": "Sala Ecoante",            "type": "NORMAL",    "x": 0, "y": 1 },
-        { "id": "r7",  "name": "Câmara das Alavancas",    "type": "LEVER",     "x": 1, "y": 1, "correctLeverId": 3 },
-        { "id": "r8",  "name": "Forja Esquecida",         "type": "NORMAL",    "x": 2, "y": 1 },
-        { "id": "r9",  "name": "Arquivo Sombrio",         "type": "PUZZLE",    "x": 3, "y": 1, "enigmaId": "e7" },
-        { "id": "r10", "name": "Entrada Oeste",           "type": "ENTRANCE",    "x": 4, "y": 1 },
+      { "id": "r6",  "name": "Echoing Room",             "type": "NORMAL",    "x": 0, "y": 1 },
+      { "id": "r7",  "name": "Lever Chamber",            "type": "LEVER",     "x": 1, "y": 1, "correctLeverId": 3 },
+      { "id": "r8",  "name": "Forgotten Forge",          "type": "NORMAL",    "x": 2, "y": 1 },
+      { "id": "r9",  "name": "Shadow Archive",           "type": "PUZZLE",    "x": 3, "y": 1, "enigmaId": "e7" },
+      { "id": "r10", "name": "West Entrance",            "type": "ENTRANCE",  "x": 4, "y": 1 },
 
-        { "id": "r11", "name": "Entrada Este",            "type": "ENTRANCE",    "x": 0, "y": 2 },
-        { "id": "r12", "name": "Sala do Cristal",         "type": "TREASURE",  "x": 1, "y": 2, "hasTreasure": true },
-        { "id": "r13", "name": "Poço Antigo",             "type": "NORMAL",    "x": 2, "y": 2 },
-        { "id": "r14", "name": "Câmara do Guardião",      "type": "LEVER",     "x": 3, "y": 2, "correctLeverId": 1 },
-        { "id": "r15", "name": "Tumba Secreta",           "type": "PUZZLE",    "x": 4, "y": 2, "enigmaId": "e3" },
+      { "id": "r11", "name": "East Hall",                "type": "NORMAL",    "x": 0, "y": 2 },
+      { "id": "r12", "name": "Crystal Room",             "type": "LEAVER",  "x": 1, "y": 2, "correctLeverId": 2 },
+      { "id": "r13", "name": "Ancient Well",             "type": "TREASURE",    "x": 2, "y": 2, "hasTreasure": true },
+      { "id": "r14", "name": "Guardian Chamber",         "type": "LEVER",     "x": 3, "y": 2, "correctLeverId": 1 },
+      { "id": "r15", "name": "Secret Tomb",              "type": "PUZZLE",    "x": 4, "y": 2, "enigmaId": "e3" },
 
-        { "id": "r16", "name": "Passagem Oculta",         "type": "NORMAL",    "x": 0, "y": 3 },
-        { "id": "r17", "name": "Sala do Eco Infinito",    "type": "NORMAL",    "x": 1, "y": 3 },
-        { "id": "r18", "name": "Jardim Submerso",         "type": "NORMAL",    "x": 2, "y": 3 },
-        { "id": "r19", "name": "Fonte Lunar",             "type": "PUZZLE",    "x": 3, "y": 3, "enigmaId": "e19" },
-        { "id": "r20", "name": "Saída",                   "type": "EXIT",    "x": 4, "y": 3 }
-      ],
+      { "id": "r16", "name": "Hidden Passage",           "type": "NORMAL",    "x": 0, "y": 3 },
+      { "id": "r17", "name": "Infinite Echo Room",       "type": "NORMAL",    "x": 1, "y": 3 },
+      { "id": "r18", "name": "Sunken Garden",            "type": "NORMAL",    "x": 2, "y": 3 },
+      { "id": "r19", "name": "Moon Fountain",            "type": "PUZZLE",    "x": 3, "y": 3, "enigmaId": "e19" },
+      { "id": "r20", "name": "Exit",                     "type": "EXIT",      "x": 4, "y": 3 },
 
-      "halls": [
-        { "origin": "r1",  "destination": "r2",  "size": 4 },
-        { "origin": "r2",  "destination": "r3",  "size": 5 },
-        { "origin": "r3",  "destination": "r4",  "size": 3 },
-        { "origin": "r4",  "destination": "r5",  "size": 6 },
+      { "id": "r21", "name": "Echo Gallery",             "type": "NORMAL",    "x": 0, "y": 4 },
+      { "id": "r22", "name": "South Entrance",           "type": "ENTRANCE",  "x": 1, "y": 4 },
+      { "id": "r23", "name": "Orichalcum Chamber",       "type": "PUZZLE",    "x": 2, "y": 4, "enigmaId": "e21" },
+      { "id": "r24", "name": "Ancient Sanctuary",        "type": "NORMAL",    "x": 3, "y": 4 },
+      { "id": "r25", "name": "Arcane Workshop",          "type": "NORMAL",    "x": 4, "y": 4 }
+    ],
 
-        { "origin": "r1",  "destination": "r6",  "size": 7 },
-        { "origin": "r6",  "destination": "r7",  "size": 3 },
-        { "origin": "r7",  "destination": "r8",  "size": 3 },
-        { "origin": "r8",  "destination": "r9",  "size": 4 },
+    "halls": [
+      { "origin": "r1",  "destination": "r2",  "size": 4 },
+      { "origin": "r2",  "destination": "r3",  "size": 5 },
+      { "origin": "r3",  "destination": "r4",  "size": 3 },
+      { "origin": "r4",  "destination": "r5",  "size": 6 },
 
-        { "origin": "r6",  "destination": "r11", "size": 4 },
-        { "origin": "r7",  "destination": "r12", "size": 4 },
-        { "origin": "r8",  "destination": "r13", "size": 3 },
+      { "origin": "r1",  "destination": "r6",  "size": 7 },
+      { "origin": "r6",  "destination": "r7",  "size": 3 },
+      { "origin": "r7",  "destination": "r8",  "size": 3 },
+      { "origin": "r8",  "destination": "r9",  "size": 4 },
 
-        { "origin": "r11", "destination": "r16", "size": 5 },
-        { "origin": "r12", "destination": "r17", "size": 3 },
-        { "origin": "r13", "destination": "r18", "size": 4 },
+      { "origin": "r6",  "destination": "r11", "size": 4 },
+      { "origin": "r7",  "destination": "r12", "size": 4 },
+      { "origin": "r8",  "destination": "r13", "size": 3 },
 
-        { "origin": "r16", "destination": "r17", "size": 3 },
-        { "origin": "r17", "destination": "r18", "size": 3 },
+      { "origin": "r11", "destination": "r16", "size": 5 },
+      { "origin": "r12", "destination": "r17", "size": 3 },
+      { "origin": "r13", "destination": "r18", "size": 4 },
 
-        { "origin": "r9",  "destination": "r14", "size": 4 },
-        { "origin": "r14", "destination": "r19", "size": 3 },
+      { "origin": "r16", "destination": "r17", "size": 3 },
+      { "origin": "r17", "destination": "r18", "size": 3 },
 
-        { "origin": "r10", "destination": "r15", "size": 4 },
-        { "origin": "r15", "destination": "r20", "size": 4 },
+      { "origin": "r9",  "destination": "r14", "size": 4 },
+      { "origin": "r14", "destination": "r19", "size": 3 },
 
-        { "origin": "r9",  "destination": "r10", "size": 5 },
-        { "origin": "r18", "destination": "r19", "size": 4 }
+      { "origin": "r10", "destination": "r15", "size": 4 },
+      { "origin": "r15", "destination": "r20", "size": 4 },
 
-      ]
-    }
-  ]
+      { "origin": "r9",  "destination": "r10", "size": 5 },
+      { "origin": "r18", "destination": "r19", "size": 4 },
+
+      { "origin": "r21", "destination": "r22", "size": 4 },
+      { "origin": "r22", "destination": "r23", "size": 4 },
+      { "origin": "r23", "destination": "r24", "size": 4 },
+      { "origin": "r24", "destination": "r25", "size": 4 },
+      { "origin": "r16", "destination": "r21", "size": 4 },
+      { "origin": "r19", "destination": "r24", "size": 4 },
+      { "origin": "r20", "destination": "r25", "size": 4 }
+
+    ]
+  }
+]
