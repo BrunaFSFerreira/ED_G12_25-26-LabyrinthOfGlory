@@ -9,15 +9,21 @@ public class Hall {
     private final Room destination;
     private final RandomEvent event;
     private boolean block;
+    private final int size; // NOVO CAMPO: O peso do corredor
 
     public Hall(Room destination) {
-        this(destination, null, false);
+        this(destination, null, false, 1); // Construtor existente: usa size por omissão de 1
     }
 
-    public Hall(Room destination, RandomEvent event, boolean block) {
+    public Hall(Room destination, int size) {
+        this(destination, null, false, size);
+    }
+
+    public Hall(Room destination, RandomEvent event, boolean block, int size) {
         this.destination = destination;
         this.event = event;
         this.block = block;
+        this.size = size;
     }
 
     public Room getDestination() {
@@ -34,6 +40,10 @@ public class Hall {
 
     public void setBlock(boolean block) {
         this.block = block;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public void activateEvent(Player player, Game game) {

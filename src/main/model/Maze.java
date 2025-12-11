@@ -36,7 +36,8 @@ public class Maze {
         }
 
         origin.getNeighbors().addToRear(c);
-        destination.getNeighbors().addToRear(new Hall(origin));
+        destination.getNeighbors().addToRear(new Hall(origin, c.getSize()));
+        rooms.addEdge(origin, destination, c.getSize());
         return true;
     }
 
@@ -118,7 +119,7 @@ public class Maze {
                 continue;
             }
 
-            Hall hall = new Hall(destination);
+            Hall hall = new Hall(destination, hallDTO.size);
 
             if (origin instanceof LeverRoom) {
                 ((LeverRoom) origin).addHallToUnlock(hall);
