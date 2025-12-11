@@ -9,10 +9,10 @@ public class Hall {
     private final Room destination;
     private final RandomEvent event;
     private boolean block;
-    private final int size; // NOVO CAMPO: O peso do corredor
+    private final int size;
 
     public Hall(Room destination) {
-        this(destination, null, false, 1); // Construtor existente: usa size por omissão de 1
+        this(destination, null, false, 1);
     }
 
     public Hall(Room destination, int size) {
@@ -46,12 +46,22 @@ public class Hall {
         return size;
     }
 
-    public void activateEvent(Player player, Game game) {
+    public boolean activateEvent(Player player, Game game) {
         if (block) {
-            return;
+            return false;
         }
+
+        // Se o destino for uma EnigmaRoom, delega para o Game para pedir/validar a resposta.
+        if (destination instanceof EnigmaRoom) {
+            EnigmaRoom er = (EnigmaRoom) destination;
+            return game.attemptEnterEnigmaRoom(player, er);
+        }
+
+        // Evento genérico (se existir) apenas ativa, não impede a passagem por padrão.
         if (event != null) {
             event.activate(player, game);
         }
+
+        return true;
     }
 }

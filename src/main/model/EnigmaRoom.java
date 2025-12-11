@@ -5,16 +5,10 @@ import main.utils.RoomType;
 
 public class EnigmaRoom extends Room {
 
-    private final String enigmaId;
 
-    public EnigmaRoom(String id, String name, boolean hasTreasure, String enigmaId) {
+    public EnigmaRoom(String id, String name, boolean hasTreasure) {
         super(id, name, hasTreasure, RoomType.PUZZLE);
-        this.enigmaId = enigmaId;
         setResolved(false);
-    }
-
-    public String getEnigmaId() {
-        return enigmaId;
     }
 
     public boolean attemptSolve(String playerAnswer, Enigma enigma, Player player) {

@@ -87,7 +87,7 @@ public class Maze {
             switch (type) {
                 case PUZZLE:
                     // Cria EnigmaRoom
-                    room = new EnigmaRoom(roomDTO.id, roomDTO.name, roomDTO.hasTreasure, roomDTO.enigmaId);
+                    room = new EnigmaRoom(roomDTO.id, roomDTO.name, roomDTO.hasTreasure);
                     break;
                 case LEVER:
                     // Cria LeverRoom
@@ -147,14 +147,12 @@ public class Maze {
         final int GAP_X = 4; // espaço horizontal entre salas
         final int GAP_Y = 2; // espaço vertical entre salas
 
-        // Encontrar limites do labirinto
         int maxX = 0, maxY = 0;
         for (Room r : rooms) {
             maxX = Math.max(maxX, r.getX());
             maxY = Math.max(maxY, r.getY());
         }
 
-        // Criar grelha segura
         int width = (maxX + 1) * (W + GAP_X);
         int height = (maxY + 1) * (H + GAP_Y);
 
@@ -163,33 +161,36 @@ public class Maze {
             for (int x = 0; x < width; x++)
                 grid[y][x] = " ";
 
-        // Desenhar sala + símbolo
         for (Room room : rooms) {
 
             int ox = room.getX() * (W + GAP_X);
             int oy = room.getY() * (H + GAP_Y);
 
-            // borda superior
             grid[oy][ox] = "╔";
             for (int i = 1; i < W - 1; i++) grid[oy][ox + i] = "─";
             grid[oy][ox + W - 1] = "╗";
 
-            // laterais
             for (int j = 1; j < H - 1; j++) {
                 grid[oy + j][ox] = "│";
                 grid[oy + j][ox + W - 1] = "│";
             }
 
-            // borda inferior
             grid[oy + H - 1][ox] = "╚";
             for (int i = 1; i < W - 1; i++) grid[oy + H - 1][ox + i] = "─";
             grid[oy + H - 1][ox + W - 1] = "╝";
 
-            // símbolo
-            String symbol =
-                    room.isHasTreasure() ? "✦" :
-                            room instanceof EnigmaRoom ? "⧈" :
-                                    room instanceof LeverRoom ? "⥂" : " ";
+            String symbol;
+            if (room.isHasTreasure()) {
+                symbol = "💰";
+            } else if (room instanceof EnigmaRoom) {
+                symbol = "❓";
+            } else if (room instanceof LeverRoom) {
+                symbol = "🧩";
+            } else if (room.getType() == RoomType.ENTRANCE) {
+                symbol = "➡️";
+            } else {
+                symbol = " ";
+            }
 
             int cx = ox + W / 2;
             int cy = oy + H / 2;

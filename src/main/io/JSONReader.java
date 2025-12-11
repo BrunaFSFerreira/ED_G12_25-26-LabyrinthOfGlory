@@ -30,7 +30,7 @@ public class JSONReader {
             Enigma[] arrayTemp = gson.fromJson(reader, Enigma[].class);
 
             for (Enigma e : arrayTemp) {
-                if (e.getIdEnigma() == null || e.getIdEnigma().isEmpty() || e.getQuestion() == null || e.getQuestion().isEmpty() || e.getAnswer() == null || e.getAnswer().isEmpty()) {
+                if ( e.getQuestion() == null || e.getQuestion().isEmpty() || e.getAnswer() == null || e.getAnswer().isEmpty()) {
                     System.out.println("Enigma Invalid found: " + e);
                     continue;
                 } else {
@@ -59,7 +59,6 @@ public class JSONReader {
         public RoomType type;
         public int x;
         public int y;
-        public String enigmaId;
         public Integer correctLeverId;
     }
 
@@ -117,9 +116,6 @@ public class JSONReader {
                     if (roomObj.has("x")) roomDTO.x = roomObj.get("x").getAsInt();
                     if (roomObj.has("y")) roomDTO.y = roomObj.get("y").getAsInt();
 
-                    if (roomObj.has("enigmaId")) {
-                        roomDTO.enigmaId = roomObj.get("enigmaId").getAsString();
-                    }
                     if (roomObj.has("correctLeverId") && roomObj.get("correctLeverId").isJsonPrimitive()) {
                         roomDTO.correctLeverId = roomObj.get("correctLeverId").getAsInt();
                     }

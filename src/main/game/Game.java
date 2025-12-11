@@ -1,9 +1,8 @@
 package main.game;
 
-import main.data.impl.list.ArrayOrderedList;
 import main.data.impl.list.ArrayUnorderedList;
 import main.data.impl.list.DoubleLinkedUnorderedList;
-import main.data.impl.list.LinkedOrderedList;
+import main.data.impl.list.LinkedList;
 import main.data.impl.queue.LinkedQueue;
 import main.model.*;
 
@@ -19,13 +18,21 @@ public class Game {
     private Player winner;
     private final Random random;
     private final DoubleLinkedUnorderedList<Player> allPlayers;
+    private final LinkedList<Enigma> enigmas;
+    private final Enigma enigmaManager;
 
-    public Game(Maze maze, DoubleLinkedUnorderedList<Player> players) {
+    public Game(Maze maze, DoubleLinkedUnorderedList<Player> players, LinkedList<Enigma> enigmas) {
         this.maze = maze;
         this.queueShifts = new LinkedQueue<>();
         this.allPlayers = players;
         this.currentShift = 1;
         this.random = new Random();
+        this.enigmas = enigmas;
+
+        this.enigmaManager = new Enigma();
+        if (this.enigmas != null && !this.enigmas.isEmpty()) {
+            this.enigmaManager.initializeQueues(this.enigmas);
+        }
 
         for (Player player : players) {
             queueShifts.enqueue(player);
@@ -41,7 +48,7 @@ public class Game {
     }
 
     public void start() {
-        System.out.println("--- Game started: Labyrinth of Glory\n ---");
+        System.out.println("--- Game started: Labyrinth of Glory ---\n");
 
         while (queueShifts.size() > 0 && winner == null) {
             Player active = queueShifts.dequeue();
@@ -75,7 +82,6 @@ public class Game {
         winner.addActionToHistory("WON: entered treasure room " +
                 (winner.getCurrentPosition() != null ? winner.getCurrentPosition().getName() : "<unknown>"));
         System.out.println("GAME OVER. Winner: " + winner.getName());
-        // Esvazia a fila de turnos para garantir que o loop termine
         while (queueShifts.size() > 0) {
             queueShifts.dequeue();
         }
@@ -103,30 +109,40 @@ public class Game {
 
         Hall hall = getHallToDestination(current, next);
 
-        if (hall == null || hall.isBlock()) {
+        if (hall == null) {
             if (current instanceof LeverRoom) {
                 ((LeverRoom) current).attemptSolve(0, active);
                 active.addActionToHistory("Attempted to solve LeverRoom " + current.getName() + ".");
             } else if (current instanceof EnigmaRoom) {
                 active.addActionToHistory("Attempted to solve EnigmaRoom " + current.getName() + ".");
             }
-            return; // Não houve movimento.
+            return;
         }
+
+        boolean canEnter = hall.activateEvent(active, this);
+        if (!canEnter) {
+            active.addActionToHistory("Movement blocked to " + next.getName());
+            System.out.println("-> " + active.getName() + " could not enter " + next.getName());
+            return;
+        }
+
         active.setCurrentPosition(next);
         active.addActionToHistory("Movement: " + current.getId() + " -> " + next.getName());
 
-        if (hall.getEvent() != null) { // Hall.getEvent() deve retornar a classe RandomEvent
-            hall.getEvent().activate(active, this);
-        }
-
+        // Se já houve um evento que concedeu EXTRA_MOVE, tenta o movimento extra (também verifica evento na passagem)
         if (active.getHistoricalActions().last().contains("EXTRA_MOVE")) {
             Room extraNext = active.chooseMovement(this);
             if (extraNext != null) {
                 Hall extraHall = getHallToDestination(next, extraNext);
-                if (extraHall != null && !extraHall.isBlock()) {
-                    active.setCurrentPosition(extraNext);
-                    active.addActionToHistory("Extra Movement: " + next.getId() + " -> " + extraNext.getName());
-                    System.out.println("-> " + active.getName() + " made an extra move to " + extraNext.getName());
+                if (extraHall != null) {
+                    boolean canEnterExtra = extraHall.activateEvent(active, this);
+                    if (canEnterExtra) {
+                        active.setCurrentPosition(extraNext);
+                        active.addActionToHistory("Extra Movement: " + next.getId() + " -> " + extraNext.getName());
+                        System.out.println("-> " + active.getName() + " made an extra move to " + extraNext.getName());
+                    } else {
+                        active.addActionToHistory("Extra movement blocked to " + extraNext.getName());
+                    }
                 }
             }
         }
@@ -216,13 +232,13 @@ public class Game {
                 }
                 roundIndex++;
             } else {
-                System.out.println("\nEntrances: ");
+                System.out.println("\n--- Entrance Room ---");
                 int i = 1;
                 for (Room r : entriesList) {
                     System.out.println(i + ") " + r.getName() + " (ID: " + r.getId() + ")");
                     i++;
                 }
-                System.out.println("Select an entrance: ");
+                System.out.println("\n Player " + p.getName() + ", choose your entrance:");
                 String line = scanner.nextLine().trim();
 
                 try {
@@ -284,6 +300,44 @@ public class Game {
                     (start != null ? start.getName() : "<none>"));
         }
     }
+
+    private Enigma findEnigmaById(String id) {
+        if (id == null || enigmas == null) return null;
+        for (Enigma e : enigmas) {
+            if (id.equals(e.getIdEnigma())) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    public boolean attemptEnterEnigmaRoom(Player player, EnigmaRoom room) {
+        Scanner scanner = new Scanner(System.in);
+
+        Enigma enigma = null;
+        if (enigma == null) {
+            enigma = enigmaManager.getNextEnigma();
+        }
+
+        // se ainda não há enigma disponível, mantém comportamento anterior e permite entrada
+        if (enigma == null) {
+            return true;
+        }
+
+        System.out.println(player.getName() + ", resolva o enigma: ");
+        System.out.println(enigma.getQuestion());
+        System.out.print("Resposta: ");
+        String answer = scanner.nextLine().trim();
+
+        boolean solved = room.attemptSolve(answer, enigma, player);
+
+        if (!solved) {
+            player.addActionToHistory("Blocked entering " + room.getName() + " due to wrong enigma answer.");
+        }
+
+        return solved;
+    }
+
 }
 
 

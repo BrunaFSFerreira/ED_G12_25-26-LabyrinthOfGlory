@@ -80,7 +80,7 @@ public class App {
         }
 
         DoubleLinkedUnorderedList<Player> initialList = new DoubleLinkedUnorderedList<>();
-        Game game = new Game(maze, initialList);
+        Game game = new Game(maze, initialList, listaEnigmas);
 
         game.addPlayers(playersForGame);
 
