@@ -4,9 +4,9 @@ import com.google.gson.*;
 
 import java.io.FileReader;
 
+import main.data.impl.list.LinkedList;
 import main.data.impl.list.LinkedUnorderedList;
-import main.model.Enigma;
-import main.utils.RoomType;
+import main.model.EnigmaData;
 
 public class JSONReader {
 
@@ -22,16 +22,16 @@ public class JSONReader {
         this.mapFilePath = mapFilePath;
     }
 
-    public LinkedUnorderedList<Enigma> readEnigmas() {
-        LinkedUnorderedList<Enigma> enigmas = new LinkedUnorderedList<>();
+    public LinkedUnorderedList<EnigmaData> readEnigmas() {
+        LinkedUnorderedList<EnigmaData> enigmas = new LinkedUnorderedList<>();
 
         try (FileReader reader = new FileReader(enigmaFilePath)) {
             Gson gson = new Gson();
-            Enigma[] arrayTemp = gson.fromJson(reader, Enigma[].class);
+            EnigmaData[] arrayTemp = gson.fromJson(reader, EnigmaData[].class);
 
-            for (Enigma e : arrayTemp) {
+            for (EnigmaData e : arrayTemp) {
                 if ( e.getQuestion() == null || e.getQuestion().isEmpty() || e.getAnswer() == null || e.getAnswer().isEmpty()) {
-                    System.out.println("Enigma Invalid found: " + e);
+                    System.err.println("Enigma Invalid found (skipped): " + e);
                     continue;
                 } else {
                     enigmas.addToRear(e);
@@ -39,7 +39,8 @@ public class JSONReader {
             }
 
         } catch (JsonSyntaxException e) {
-            System.out.println("Poorly structured JSON: " + e.getMessage());
+            System.err.println("Poorly structured JSON: " + e.getMessage());
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,10 +57,16 @@ public class JSONReader {
         public String id;
         public String name;
         public boolean hasTreasure;
-        public RoomType type;
         public int x;
         public int y;
         public Integer correctLeverId;
+
+        public String getChallengeType() {
+            if (correctLeverId != null) return "LEVER";
+            if (id.equals("r1") || id.equals("r10") || id.equals("r22")) return "ENTRANCE";
+            if (hasTreasure) return "TREASURE";
+            return "NORMAL";
+        }
     }
 
     public static class HallDTO {
@@ -90,7 +97,7 @@ public class JSONReader {
                     JsonObject roomObj = room.getAsJsonObject();
 
                     if (!roomObj.has("id") || !roomObj.has("name")) {
-                        System.out.println("Found Invalid Room: " + roomObj);
+                        System.err.println("Found Invalid Room (skipped): " + roomObj);
                         continue;
                     }
 
@@ -102,15 +109,6 @@ public class JSONReader {
                         roomDTO.hasTreasure = roomObj.get("hasTreasure").getAsBoolean();
                     } else {
                         roomDTO.hasTreasure = false;
-                    }
-                    if (roomObj.has("type")) {
-                        try {
-                            roomDTO.type = RoomType.valueOf(roomObj.get("type").getAsString().toUpperCase());
-                        } catch (Exception e) {
-                            roomDTO.type = RoomType.NORMAL;
-                        }
-                    } else {
-                        roomDTO.type = RoomType.NORMAL;
                     }
 
                     if (roomObj.has("x")) roomDTO.x = roomObj.get("x").getAsInt();
@@ -132,7 +130,7 @@ public class JSONReader {
                     JsonObject hallObj = hall.getAsJsonObject();
 
                     if (!hallObj.has("origin") || !hallObj.has("destination") || !hallObj.has("size")) {
-                        System.out.println("Invalid Hall found: " + hallObj);
+                        System.err.println("Invalid Hall found (skipped): " + hallObj);
                         continue;
                     }
 
@@ -152,4 +150,5 @@ public class JSONReader {
 
         return maps;
     }
+
 }

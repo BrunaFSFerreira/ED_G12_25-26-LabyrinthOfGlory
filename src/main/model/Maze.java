@@ -3,12 +3,16 @@ package main.model;
 import main.data.impl.graph.WeightedGraph.AdjListGraph;
 import main.data.impl.list.DoubleLinkedUnorderedList;
 import main.data.impl.list.LinkedUnorderedList;
+import main.data.impl.list.ArrayUnorderedList;
 import main.io.JSONReader;
-import main.utils.RoomType;
+import main.utils.ChallengeType;
+import java.util.Random;
+import java.util.Iterator;
 
 public class Maze {
 
     private final AdjListGraph<Room> rooms = new AdjListGraph<>();
+    private final Random random = new Random();
 
     public boolean addRoom(Room d) {
         if (d == null || d.getId() == null || getRoomById(d.getId()) != null) {
@@ -44,7 +48,8 @@ public class Maze {
     public DoubleLinkedUnorderedList<Room> getEntries() {
         DoubleLinkedUnorderedList<Room> entries = new DoubleLinkedUnorderedList<>();
         for (Room room : rooms) {
-            if (room.getType() == RoomType.ENTRANCE) {
+            // As salas de ENTRANCE são identificadas por ID (r1, r10, r22 em maps.json)
+            if (room.getId().equals("r1") || room.getId().equals("r10") || room.getId().equals("r22")) {
                 entries.addToRear(room);
             }
         }
@@ -72,47 +77,30 @@ public class Maze {
 
         JSONReader.MapDTO map = maps.first();
 
+        // Lista para identificar as salas candidatas a ENIGMA (para seleção aleatória)
+        ArrayUnorderedList<String> enigmaCandidates = new ArrayUnorderedList<>();
+
+
+        // 1ª Passagem: Cria todas as salas e identifica candidatos a Enigma
         for (JSONReader.RoomDTO roomDTO: map.rooms) {
-            Room room;
-            RoomType type;
-            try {
-                type = RoomType.valueOf(roomDTO.type.name());
-            } catch (Exception e) {
-                type = RoomType.NORMAL;
-            }
-
-            int x = roomDTO.x;
-            int y = roomDTO.y;
-
-            switch (type) {
-                case PUZZLE:
-                    // Cria EnigmaRoom
-                    room = new EnigmaRoom(roomDTO.id, roomDTO.name, roomDTO.hasTreasure);
-                    break;
-                case LEVER:
-                    // Cria LeverRoom
-                    int correctLeverId = roomDTO.correctLeverId != null ? roomDTO.correctLeverId : 1;
-                    room = new LeverRoom(roomDTO.id, roomDTO.name, roomDTO.hasTreasure, correctLeverId);
-                    break;
-                default:
-                    // Cria Room genérica
-                    // Note: Room is abstract, so it's instantiated as an anonymous subclass here.
-                    room = new Room(roomDTO.id, roomDTO.name, roomDTO.hasTreasure, roomDTO.type ) {};
-                    break;
-            }
-
-            room.setX(x);
-            room.setY(y);
+            Room room = new Room(roomDTO.id, roomDTO.name, roomDTO.hasTreasure) {};
+            room.setX(roomDTO.x);
+            room.setY(roomDTO.y);
 
             if(!addRoom(room)) {
                 System.out.println("Failed to add Room: " + roomDTO.id);
             }
+
+            // Verifica se a sala é candidata a ENIGMA (se getChallengeType() retornar "NORMAL")
+            if (roomDTO.getChallengeType().equals("NORMAL")) {
+                enigmaCandidates.addToRear(roomDTO.id);
+            }
         }
 
+        // 2ª Passagem: Adiciona corredores
         for (JSONReader.HallDTO hallDTO : map.halls) {
             Room origin = getRoomById(hallDTO.origin);
             Room destination = getRoomById(hallDTO.destination);
-
 
             if (origin == null || destination == null) {
                 System.out.println("Failed to add Hall: " + hallDTO.origin + " -> " + hallDTO.destination);
@@ -121,13 +109,77 @@ public class Maze {
 
             Hall hall = new Hall(destination, hallDTO.size);
 
-            if (origin instanceof LeverRoom) {
-                ((LeverRoom) origin).addHallToUnlock(hall);
-            }
-
             if (!addHall(origin, destination, hall)) {
                 System.out.println("Failed to add Hall: " + hallDTO.origin + " -> " + hallDTO.destination);
             }
+        }
+
+        // 3ª Passagem: Atribui Desafios (LEVER fixo, ENIGMA aleatório)
+
+        // A. Seleciona 3 salas aleatórias para ENIGMA
+        ArrayUnorderedList<String> selectedEnigmas = new ArrayUnorderedList<>();
+        int enigmasToSelect = 3;
+        int currentCandidatesCount = enigmaCandidates.size();
+
+        if (currentCandidatesCount < enigmasToSelect) {
+            System.err.println("Aviso: Apenas " + currentCandidatesCount + " salas candidatas a Enigma. Esperado: " + enigmasToSelect);
+            enigmasToSelect = currentCandidatesCount;
+        }
+
+        for (int i = 0; i < enigmasToSelect; i++) {
+            // Seleciona um índice aleatório
+            int randomIndex = random.nextInt(currentCandidatesCount);
+
+            // Encontra o ID na posição aleatória
+            String selectedId = null;
+            int counter = 0;
+            // Percorrer a lista para encontrar o elemento pelo índice
+            Iterator<String> it = enigmaCandidates.iterator();
+            while(it.hasNext()) {
+                String id = it.next();
+                if(counter == randomIndex) {
+                    selectedId = id;
+                    break;
+                }
+                counter++;
+            }
+
+            if (selectedId != null) {
+                selectedEnigmas.addToRear(selectedId);
+                // Remove o ID da lista de candidatos para evitar seleção duplicada e manter a contagem
+                enigmaCandidates.remove(selectedId);
+                currentCandidatesCount = enigmaCandidates.size(); // Atualiza a contagem após a remoção
+            }
+        }
+
+        System.out.println("Salas de Enigma selecionadas aleatoriamente: " + selectedEnigmas.toString());
+
+
+        // B. Atribui os desafios às salas
+        for (JSONReader.RoomDTO roomDTO: map.rooms) {
+            Room room = getRoomById(roomDTO.id);
+            if (room == null) continue;
+
+            Challenge challenge = null;
+            String challengeType = roomDTO.getChallengeType();
+
+            if (challengeType.equals("LEVER")) {
+                // Desafio LEVER (Fixo pelo JSON)
+                int correctLeverId = roomDTO.correctLeverId != null ? roomDTO.correctLeverId : 1;
+                challenge = new Challenge(ChallengeType.LEVER, correctLeverId);
+
+                // Bloqueia TODAS as saídas da sala
+                for (Hall hall : room.getNeighbors()) {
+                    hall.setBlock(true);
+                    room.getHallsToUnlock().addToRear(hall);
+                }
+
+            } else if (selectedEnigmas.contains(roomDTO.id)) {
+                // Desafio ENIGMA (Aleatório)
+                challenge = new Challenge(ChallengeType.ENIGMA);
+            }
+
+            room.setChallenge(challenge);
         }
 
         printMaze();
@@ -161,6 +213,7 @@ public class Maze {
             for (int x = 0; x < width; x++)
                 grid[y][x] = " ";
 
+        // Usa os desafios REALMENTE atribuídos na room
         for (Room room : rooms) {
 
             int ox = room.getX() * (W + GAP_X);
@@ -179,17 +232,22 @@ public class Maze {
             for (int i = 1; i < W - 1; i++) grid[oy + H - 1][ox + i] = "─";
             grid[oy + H - 1][ox + W - 1] = "╝";
 
-            String symbol;
+            String symbol = " ";
+
+            // Determinação do símbolo (Ordem de Prioridade Lógica)
             if (room.isHasTreasure()) {
-                symbol = "💰";
-            } else if (room instanceof EnigmaRoom) {
-                symbol = "❓";
-            } else if (room instanceof LeverRoom) {
-                symbol = "🧩";
-            } else if (room.getType() == RoomType.ENTRANCE) {
+                symbol = "💰"; // 1. Tesouro (Mais Alta Prioridade)
+            } else if (room.getChallenge() != null) {
+                // 2. Desafio (Alta Prioridade)
+                ChallengeType type = room.getChallenge().getType();
+                if (type == ChallengeType.ENIGMA) {
+                    symbol = "❓";
+                } else if (type == ChallengeType.LEVER) {
+                    symbol = "🧩";
+                }
+            } else if (room.getId().equals("r1") || room.getId().equals("r10") || room.getId().equals("r22")) {
+                // 3. Entrada (Média Prioridade, se não tiver desafio/tesouro)
                 symbol = "➡️";
-            } else {
-                symbol = " ";
             }
 
             int cx = ox + W / 2;
@@ -242,7 +300,7 @@ public class Maze {
                 sb.append(grid[y][x]);
             System.out.println(sb);
         }
-        System.out.println("==========================");
+        System.out.println("=========================");
     }
 
     public Room getRoomById(String id) {
@@ -263,15 +321,21 @@ public class Maze {
         System.out.println("=== LABIRINTO CARREGADO ===");
 
         for (Room room : rooms) {
+            String challengeStatus = "";
+            if (room.getChallenge() != null) {
+                challengeStatus = "[DESAFIO: " + room.getChallenge().getType() + " - Resolvido: " + room.isChallengeResolved() + "]";
+            }
+
             System.out.println("Divisão: " + room.getId() +
                     " (" + room.getName() + ") " +
-                    (room.isHasTreasure() ? "[TESOURO]" : ""));
+                    (room.isHasTreasure() ? "[TESOURO]" : "") +
+                    challengeStatus);
 
             if (room.getNeighbors().isEmpty()) {
                 System.out.println("  -> Sem corredores");
             } else {
                 for (Hall c : room.getNeighbors()) {
-                    System.out.println("  -> Conecta a: " + c.getDestination().getId());
+                    System.out.println("  -> Conecta a: " + c.getDestination().getId() + (c.isBlock() ? " [BLOQUEADO]" : ""));
                 }
             }
         }
@@ -280,4 +344,3 @@ public class Maze {
     }
 
 }
-

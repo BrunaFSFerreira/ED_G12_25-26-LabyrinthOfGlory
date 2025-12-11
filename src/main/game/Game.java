@@ -18,25 +18,32 @@ public class Game {
     private Player winner;
     private final Random random;
     private final DoubleLinkedUnorderedList<Player> allPlayers;
-    private final LinkedList<Enigma> enigmas;
-    private final Enigma enigmaManager;
+    private final Scanner scanner;
 
-    public Game(Maze maze, DoubleLinkedUnorderedList<Player> players, LinkedList<Enigma> enigmas) {
+    private final ChallengeManager challengeManager;
+
+    public Game(Maze maze, DoubleLinkedUnorderedList<Player> players, LinkedList<EnigmaData> enigmas, Scanner scanner) {
         this.maze = maze;
         this.queueShifts = new LinkedQueue<>();
         this.allPlayers = players;
         this.currentShift = 1;
         this.random = new Random();
-        this.enigmas = enigmas;
+        this.scanner = scanner;
 
-        this.enigmaManager = new Enigma();
-        if (this.enigmas != null && !this.enigmas.isEmpty()) {
-            this.enigmaManager.initializeQueues(this.enigmas);
-        }
+        // Inicializa o manager com a lista de enigmas lida
+        this.challengeManager = new ChallengeManager(enigmas);
 
         for (Player player : players) {
             queueShifts.enqueue(player);
         }
+    }
+
+    public ChallengeManager getChallengeManager() {
+        return challengeManager;
+    }
+
+    public Scanner getScanner() {
+        return scanner;
     }
 
     public DoubleLinkedUnorderedList<Player> getAllPlayers() {
@@ -97,6 +104,7 @@ public class Game {
         return false;
     }
 
+
     private void executePlay(Player active) {
         Room current = active.getCurrentPosition();
 
@@ -107,15 +115,19 @@ public class Game {
             return;
         }
 
+        if (next.getChallenge() != null && !next.isChallengeResolved()) {
+            boolean solved = next.getChallenge().attemptChallenge(active, this, next, this.scanner);
+
+            if (!solved) {
+                return;
+            }
+        }
+
+
         Hall hall = getHallToDestination(current, next);
 
         if (hall == null) {
-            if (current instanceof LeverRoom) {
-                ((LeverRoom) current).attemptSolve(0, active);
-                active.addActionToHistory("Attempted to solve LeverRoom " + current.getName() + ".");
-            } else if (current instanceof EnigmaRoom) {
-                active.addActionToHistory("Attempted to solve EnigmaRoom " + current.getName() + ".");
-            }
+            active.addActionToHistory("Attempted move to " + next.getName() + " but no valid hall found.");
             return;
         }
 
@@ -129,10 +141,19 @@ public class Game {
         active.setCurrentPosition(next);
         active.addActionToHistory("Movement: " + current.getId() + " -> " + next.getName());
 
-        // Se já houve um evento que concedeu EXTRA_MOVE, tenta o movimento extra (também verifica evento na passagem)
-        if (active.getHistoricalActions().last().contains("EXTRA_MOVE")) {
+        if (!active.getHistoricalActions().isEmpty() && active.getHistoricalActions().last().contains("EXTRA_MOVE")) {
             Room extraNext = active.chooseMovement(this);
             if (extraNext != null) {
+
+                if (extraNext.getChallenge() != null && !extraNext.isChallengeResolved()) {
+                    boolean extraSolved = extraNext.getChallenge().attemptChallenge(active, this, extraNext, this.scanner);
+
+                    if (!extraSolved) {
+                        System.out.println("-> " + active.getName() + " falhou o desafio extra e permanece em " + next.getName());
+                        return;
+                    }
+                }
+
                 Hall extraHall = getHallToDestination(next, extraNext);
                 if (extraHall != null) {
                     boolean canEnterExtra = extraHall.activateEvent(active, this);
@@ -178,6 +199,23 @@ public class Game {
     }
 
     public Player chooseRandomPlayer(Player exclusion) {
+        if (allPlayers.size() <= 1) return null;
+
+        ArrayUnorderedList<Player> targetablePlayers = new ArrayUnorderedList<>();
+        for(Player p : allPlayers) {
+            if (!p.equals(exclusion)) {
+                targetablePlayers.addToRear(p);
+            }
+        }
+
+        if (targetablePlayers.isEmpty()) return null;
+
+        int randomIndex = random.nextInt(targetablePlayers.size());
+        int count = 0;
+        for (Player p : targetablePlayers) {
+            if (count == randomIndex) return p;
+            count++;
+        }
         return null;
     }
 
@@ -273,7 +311,7 @@ public class Game {
                             break;
                         }
                     }
-                    if (matched == null) {
+                    if (matched != null) {
                         start = matched;
                     } else {
                         System.out.println("Invalid option. Using default.");
@@ -300,45 +338,4 @@ public class Game {
                     (start != null ? start.getName() : "<none>"));
         }
     }
-
-    private Enigma findEnigmaById(String id) {
-        if (id == null || enigmas == null) return null;
-        for (Enigma e : enigmas) {
-            if (id.equals(e.getIdEnigma())) {
-                return e;
-            }
-        }
-        return null;
-    }
-
-    public boolean attemptEnterEnigmaRoom(Player player, EnigmaRoom room) {
-        Scanner scanner = new Scanner(System.in);
-
-        Enigma enigma = null;
-        if (enigma == null) {
-            enigma = enigmaManager.getNextEnigma();
-        }
-
-        // se ainda não há enigma disponível, mantém comportamento anterior e permite entrada
-        if (enigma == null) {
-            return true;
-        }
-
-        System.out.println(player.getName() + ", resolva o enigma: ");
-        System.out.println(enigma.getQuestion());
-        System.out.print("Resposta: ");
-        String answer = scanner.nextLine().trim();
-
-        boolean solved = room.attemptSolve(answer, enigma, player);
-
-        if (!solved) {
-            player.addActionToHistory("Blocked entering " + room.getName() + " due to wrong enigma answer.");
-        }
-
-        return solved;
-    }
-
 }
-
-
-

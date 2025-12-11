@@ -1,7 +1,6 @@
 package main.model;
 
 import main.data.impl.list.LinkedUnorderedList;
-import main.utils.RoomType;
 
 public abstract class Room {
 
@@ -9,19 +8,21 @@ public abstract class Room {
     private String name;
     private final LinkedUnorderedList<Hall> neighbors = new LinkedUnorderedList<>();
     private boolean hasTreasure;
-    private boolean resolved;
-    private RoomType type;
+    private boolean isChallengeResolved;
+    private Challenge challenge;
+    private final LinkedUnorderedList<Hall> hallsToUnlock = new LinkedUnorderedList<>();
 
     private int x;
     private int y;
 
     public Room() {}
 
-    public Room(String id, String name, boolean hasTreasure, RoomType type) {
+    public Room(String id, String name, boolean hasTreasure) {
         this.id = id;
         this.name = name;
         this.hasTreasure = hasTreasure;
-        this.type = type;
+        this.isChallengeResolved = false;
+        this.challenge = null;
     }
 
     public String getId() {
@@ -52,20 +53,24 @@ public abstract class Room {
         this.hasTreasure = hasTreasure;
     }
 
-    public boolean isResolved() {
-        return resolved;
+    public boolean isChallengeResolved() {
+        return isChallengeResolved;
     }
 
-    public void setResolved(boolean resolved) {
-        this.resolved = resolved;
+    public void setChallengeResolved(boolean resolved) {
+        this.isChallengeResolved = resolved;
     }
 
-    public RoomType getType() {
-        return type;
+    public Challenge getChallenge() {
+        return challenge;
     }
 
-    public void setType(RoomType type) {
-        this.type = type;
+    public void setChallenge(Challenge challenge) {
+        this.challenge = challenge;
+    }
+
+    public LinkedUnorderedList<Hall> getHallsToUnlock() {
+        return hallsToUnlock;
     }
 
     public int getX() {

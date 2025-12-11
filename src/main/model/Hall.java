@@ -51,13 +51,6 @@ public class Hall {
             return false;
         }
 
-        // Se o destino for uma EnigmaRoom, delega para o Game para pedir/validar a resposta.
-        if (destination instanceof EnigmaRoom) {
-            EnigmaRoom er = (EnigmaRoom) destination;
-            return game.attemptEnterEnigmaRoom(player, er);
-        }
-
-        // Evento genérico (se existir) apenas ativa, não impede a passagem por padrão.
         if (event != null) {
             event.activate(player, game);
         }

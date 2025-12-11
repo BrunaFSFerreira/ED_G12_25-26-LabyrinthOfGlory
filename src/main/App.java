@@ -9,24 +9,14 @@ import main.game.HumanPlayer;
 import main.game.Player;
 import main.io.JSONReader;
 import main.io.JSONWriter;
-import main.model.Enigma;
+import main.model.EnigmaData;
 import main.model.Maze;
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
         JSONReader reader = new JSONReader();
-        LinkedList<Enigma> listaEnigmas = reader.readEnigmas();
-
-        Enigma menager = new Enigma();
-        menager.initializeQueues(listaEnigmas);
-
-        for (int i = 1; i <= listaEnigmas.size() * 2; i++) {
-            Enigma e = menager.getNextEnigma();
-            if (e != null) {
-            } else {
-            }
-        }
+        LinkedList<EnigmaData> listaEnigmas = reader.readEnigmas();
 
         Maze maze = new Maze();
         maze.loadJSONMap();
@@ -80,12 +70,13 @@ public class App {
         }
 
         DoubleLinkedUnorderedList<Player> initialList = new DoubleLinkedUnorderedList<>();
-        Game game = new Game(maze, initialList, listaEnigmas);
+
+        Game game = new Game(maze, initialList, listaEnigmas, scanner);
 
         game.addPlayers(playersForGame);
 
         game.start();
-        
+
         JSONWriter writer = new JSONWriter();
         writer.writeGameReport(game);
 

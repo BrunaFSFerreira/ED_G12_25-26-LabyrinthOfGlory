@@ -4,13 +4,13 @@
       { "id": "r1",  "name": "Entrance",                 "x": 0, "y": 0 },
       { "id": "r2",  "name": "Ancient Chamber",          "x": 1, "y": 0 },
       { "id": "r3",  "name": "Rune Hall",                "x": 2, "y": 0 },
-      { "id": "r4",  "name": "Lost Library",             "x": 3, "y": 0 },
+      { "id": "r4",  "name": "Enigma Library",             "x": 3, "y": 0 },
       { "id": "r5",  "name": "Golden Altar",             "x": 4, "y": 0 },
 
       { "id": "r6",  "name": "Echoing Room",             "x": 0, "y": 1 },
       { "id": "r7",  "name": "Lever Chamber",            "x": 1, "y": 1, "correctLeverId": 3 },
       { "id": "r8",  "name": "Forgotten Forge",          "x": 2, "y": 1 },
-      { "id": "r9",  "name": "Shadow Archive",           "x": 3, "y": 1 },
+      { "id": "r9",  "name": "Shadow Enigma",           "x": 3, "y": 1 },
       { "id": "r10", "name": "West Entrance",            "x": 4, "y": 1 },
 
       { "id": "r11", "name": "East Hall",                "x": 0, "y": 2 },
@@ -21,7 +21,7 @@
 
       { "id": "r16", "name": "Hidden Passage",           "x": 0, "y": 3 },
       { "id": "r17", "name": "Infinite Echo Room",       "x": 1, "y": 3 },
-      { "id": "r18", "name": "Sunken Garden",            "x": 2, "y": 3 },
+      { "id": "r18", "name": "Puzzle Garden",            "x": 2, "y": 3 },
       { "id": "r19", "name": "Moon Fountain",            "x": 3, "y": 3 },
       { "id": "r20", "name": "Exit",                     "x": 4, "y": 3 },
 
