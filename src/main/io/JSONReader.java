@@ -56,13 +56,14 @@ public class JSONReader {
         public String id;
         public String name;
         public boolean hasTreasure;
+        public boolean isEntrance;
         public int x;
         public int y;
         public Integer correctLeverId;
 
         public String getChallengeType() {
             if (correctLeverId != null) return "LEVER";
-            if (id.equals("r1") || id.equals("r10") || id.equals("r22")) return "ENTRANCE";
+            if (isEntrance) return "ENTRANCE";
             if (hasTreasure) return "TREASURE";
             return "NORMAL";
         }
@@ -117,10 +118,15 @@ public class JSONReader {
                         roomDTO.correctLeverId = roomObj.get("correctLeverId").getAsInt();
                     }
 
+                    if (roomObj.has("isEntrance") && roomObj.get("isEntrance").isJsonPrimitive()) {
+                        roomDTO.isEntrance = roomObj.get("isEntrance").getAsBoolean();
+                    } else {
+                        roomDTO.isEntrance = false;
+                    }
+
                     mapDTO.rooms.addToRear(roomDTO);
                 }
 
-                //Validar Corredores
                 JsonArray hallJson = root.getAsJsonArray("halls");
                 if (hallJson == null || hallJson.isEmpty()) {
                     throw new IllegalStateException("No halls found.");

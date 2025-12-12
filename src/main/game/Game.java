@@ -14,7 +14,7 @@ import java.util.Iterator;
 public class Game {
 
     private final Maze maze;
-    private final LinkedQueue<Player> queueShifts;
+    public final LinkedQueue<Player> queueShifts;
     private int currentShift;
     private Player winner;
     private final Random random;
@@ -95,7 +95,7 @@ public class Game {
         }
     }
 
-    private boolean processBlock(Player active) {
+    public boolean processBlock(Player active) {
         if (active.getBlockedShifts() > 0) {
             active.setBlockedShifts(active.getBlockedShifts() - 1);
             active.addActionToHistory("Blocked. Turn skipped. Remaining: " + active.getBlockedShifts());
@@ -105,7 +105,7 @@ public class Game {
         return false;
     }
 
-    private void executePlay(Player active) {
+    public void executePlay(Player active) {
         Room current = active.getCurrentPosition();
         Room next = active.chooseMovement(this);
 
@@ -218,7 +218,7 @@ public class Game {
         return null;
     }
 
-    private Hall getHallToDestination(Room origin, Room destination) {
+    public Hall getHallToDestination(Room origin, Room destination) {
         for (Hall hall : origin.getNeighbors()) {
             if (hall.getDestination().equals(destination)) {
                 return hall;

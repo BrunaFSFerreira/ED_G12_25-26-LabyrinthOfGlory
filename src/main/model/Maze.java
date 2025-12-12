@@ -13,6 +13,7 @@ public class Maze {
 
     private final AdjListGraph<Room> rooms = new AdjListGraph<>();
     private final Random random = new Random();
+    private final DoubleLinkedUnorderedList<Room> entryRooms = new DoubleLinkedUnorderedList<>();
 
     public boolean addRoom(Room d) {
         if (d == null || d.getId() == null || getRoomById(d.getId()) != null) {
@@ -22,7 +23,6 @@ public class Maze {
         rooms.addVertex(d);
         return true;
     }
-
 
     public boolean addHall (Room origin, Room destination, Hall c) {
         if (origin == null || destination == null || c == null) {
@@ -46,14 +46,7 @@ public class Maze {
     }
 
     public DoubleLinkedUnorderedList<Room> getEntries() {
-        DoubleLinkedUnorderedList<Room> entries = new DoubleLinkedUnorderedList<>();
-        for (Room room : rooms) {
-            // As salas de ENTRANCE são identificadas por ID (r1, r10, r22 em maps.json)
-            if (room.getId().equals("r1") || room.getId().equals("r10") || room.getId().equals("r22")) {
-                entries.addToRear(room);
-            }
-        }
-        return entries;
+        return entryRooms;
     }
 
     public DoubleLinkedUnorderedList<Room> getTreasures() {
@@ -77,11 +70,9 @@ public class Maze {
 
         JSONReader.MapDTO map = maps.first();
 
-        // Lista para identificar as salas candidatas a ENIGMA (para seleção aleatória)
         ArrayUnorderedList<String> enigmaCandidates = new ArrayUnorderedList<>();
 
 
-        // 1ª Passagem: Cria todas as salas e identifica candidatos a Enigma
         for (JSONReader.RoomDTO roomDTO: map.rooms) {
             Room room = new Room(roomDTO.id, roomDTO.name, roomDTO.hasTreasure) {};
             room.setX(roomDTO.x);
@@ -91,13 +82,15 @@ public class Maze {
                 System.out.println("Failed to add Room: " + roomDTO.id);
             }
 
-            // Verifica se a sala é candidata a ENIGMA (se getChallengeType() retornar "NORMAL")
+            if (roomDTO.getChallengeType().equals("ENTRANCE")) {
+                this.entryRooms.addToRear(room);
+            }
+
             if (roomDTO.getChallengeType().equals("NORMAL")) {
                 enigmaCandidates.addToRear(roomDTO.id);
             }
         }
 
-        // 2ª Passagem: Adiciona corredores
         for (JSONReader.HallDTO hallDTO : map.halls) {
             Room origin = getRoomById(hallDTO.origin);
             Room destination = getRoomById(hallDTO.destination);
@@ -114,9 +107,6 @@ public class Maze {
             }
         }
 
-        // 3ª Passagem: Atribui Desafios (LEVER fixo, ENIGMA aleatório)
-
-        // A. Seleciona 3 salas aleatórias para ENIGMA
         ArrayUnorderedList<String> selectedEnigmas = new ArrayUnorderedList<>();
         int enigmasToSelect = 3;
         int currentCandidatesCount = enigmaCandidates.size();
@@ -127,13 +117,10 @@ public class Maze {
         }
 
         for (int i = 0; i < enigmasToSelect; i++) {
-            // Seleciona um índice aleatório
             int randomIndex = random.nextInt(currentCandidatesCount);
 
-            // Encontra o ID na posição aleatória
             String selectedId = null;
             int counter = 0;
-            // Percorrer a lista para encontrar o elemento pelo índice
             Iterator<String> it = enigmaCandidates.iterator();
             while(it.hasNext()) {
                 String id = it.next();
@@ -147,11 +134,10 @@ public class Maze {
             if (selectedId != null) {
                 selectedEnigmas.addToRear(selectedId);
                 enigmaCandidates.remove(selectedId);
-                currentCandidatesCount = enigmaCandidates.size(); // Atualiza a contagem após a remoção
+                currentCandidatesCount = enigmaCandidates.size();
             }
         }
 
-        // B. Atribui os desafios às salas
         for (JSONReader.RoomDTO roomDTO: map.rooms) {
             Room room = getRoomById(roomDTO.id);
             if (room == null) continue;
@@ -160,18 +146,15 @@ public class Maze {
             String challengeType = roomDTO.getChallengeType();
 
             if (challengeType.equals("LEVER")) {
-                // Desafio LEVER (Fixo pelo JSON)
                 int correctLeverId = roomDTO.correctLeverId != null ? roomDTO.correctLeverId : 1;
                 challenge = new Challenge(ChallengeType.LEVER, correctLeverId);
 
-                // Bloqueia TODAS as saídas da sala
                 for (Hall hall : room.getNeighbors()) {
                     hall.setBlock(true);
                     room.getHallsToUnlock().addToRear(hall);
                 }
 
             } else if (selectedEnigmas.contains(roomDTO.id)) {
-                // Desafio ENIGMA (Aleatório)
                 challenge = new Challenge(ChallengeType.ENIGMA);
             }
 
@@ -179,7 +162,6 @@ public class Maze {
         }
 
         printMaze();
-        //debugMaze();
     }
 
     public void printMaze() {
@@ -189,11 +171,10 @@ public class Maze {
             return;
         }
 
-        // Dimensões fixas para cada sala
-        final int W = 15;   // largura da caixa
-        final int H = 7;    // altura da caixa
-        final int GAP_X = 4; // espaço horizontal entre salas
-        final int GAP_Y = 2; // espaço vertical entre salas
+        final int W = 15;
+        final int H = 7;
+        final int GAP_X = 4;
+        final int GAP_Y = 2;
 
         int maxX = 0, maxY = 0;
         for (Room r : rooms) {
@@ -209,7 +190,6 @@ public class Maze {
             for (int x = 0; x < width; x++)
                 grid[y][x] = " ";
 
-        // Usa os desafios REALMENTE atribuídos na room
         for (Room room : rooms) {
 
             int ox = room.getX() * (W + GAP_X);
@@ -230,20 +210,17 @@ public class Maze {
 
             String symbol = " ";
 
-            // Determinação do símbolo (Ordem de Prioridade Lógica)
             if (room.isHasTreasure()) {
-                symbol = "💰"; // 1. Tesouro (Mais Alta Prioridade)
+                symbol = "💰";
             } else if (room.getChallenge() != null) {
-                // 2. Desafio (Alta Prioridade)
                 ChallengeType type = room.getChallenge().getType();
                 if (type == ChallengeType.ENIGMA) {
                     symbol = "❓";
                 } else if (type == ChallengeType.LEVER) {
                     symbol = "🧩";
                 }
-            } else if (room.getId().equals("r1") || room.getId().equals("r10") || room.getId().equals("r22")) {
-                // 3. Entrada (Média Prioridade, se não tiver desafio/tesouro)
-                symbol = "➡️";
+            } else if (entryRooms.contains(room)) {
+                symbol = "🚪";
             }
 
             int cx = ox + W / 2;
@@ -252,7 +229,6 @@ public class Maze {
             grid[cy][cx] = symbol;
         }
 
-        // Desenhar ligações sem invadir salas
         for (Room room : rooms) {
 
             int ox = room.getX() * (W + GAP_X);
@@ -288,7 +264,6 @@ public class Maze {
             }
         }
 
-        // Print final
         System.out.println("======  LABIRINTO  ======");
         for (int y = 0; y < height; y++) {
             StringBuilder sb = new StringBuilder();
@@ -312,31 +287,5 @@ public class Maze {
         return rooms;
     }
 
-    //TODO: Remover
-    public void debugMaze() {
-        System.out.println("=== LABIRINTO CARREGADO ===");
-
-        for (Room room : rooms) {
-            String challengeStatus = "";
-            if (room.getChallenge() != null) {
-                challengeStatus = "[DESAFIO: " + room.getChallenge().getType() + " - Resolvido: " + room.isChallengeResolved() + "]";
-            }
-
-            System.out.println("Divisão: " + room.getId() +
-                    " (" + room.getName() + ") " +
-                    (room.isHasTreasure() ? "[TESOURO]" : "") +
-                    challengeStatus);
-
-            if (room.getNeighbors().isEmpty()) {
-                System.out.println("  -> Sem corredores");
-            } else {
-                for (Hall c : room.getNeighbors()) {
-                    System.out.println("  -> Conecta a: " + c.getDestination().getId() + (c.isBlock() ? " [BLOQUEADO]" : ""));
-                }
-            }
-        }
-
-        System.out.println("============================\n");
-    }
 
 }

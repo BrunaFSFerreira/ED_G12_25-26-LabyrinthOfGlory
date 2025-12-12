@@ -1,7 +1,7 @@
 [
   {
     "rooms": [
-      { "id": "r1",  "name": "Entrance",                 "x": 0, "y": 0 },
+      { "id": "r1",  "name": "Entrance",                 "x": 0, "y": 0, "isEntrance": true },
       { "id": "r2",  "name": "Ancient Chamber",          "x": 1, "y": 0 },
       { "id": "r3",  "name": "Rune Hall",                "x": 2, "y": 0 },
       { "id": "r4",  "name": "Enigma Library",             "x": 3, "y": 0 },
@@ -11,7 +11,7 @@
       { "id": "r7",  "name": "Lever Chamber",            "x": 1, "y": 1, "correctLeverId": 3 },
       { "id": "r8",  "name": "Forgotten Forge",          "x": 2, "y": 1 },
       { "id": "r9",  "name": "Shadow Enigma",           "x": 3, "y": 1 },
-      { "id": "r10", "name": "West Entrance",            "x": 4, "y": 1 },
+      { "id": "r10", "name": "West Entrance",            "x": 4, "y": 1,  "isEntrance": true },
 
       { "id": "r11", "name": "East Hall",                "x": 0, "y": 2 },
       { "id": "r12", "name": "Crystal Room",             "x": 1, "y": 2, "correctLeverId": 2 },
@@ -23,7 +23,7 @@
       { "id": "r17", "name": "Infinite Echo Room",       "x": 1, "y": 3 },
       { "id": "r18", "name": "Puzzle Garden",            "x": 2, "y": 3 },
       { "id": "r19", "name": "Moon Fountain",            "x": 3, "y": 3 },
-      { "id": "r20", "name": "Exit",                     "x": 4, "y": 3 },
+      { "id": "r20", "name": "Exit",                     "x": 4, "y": 3,  "isEntrance": true },
 
       { "id": "r21", "name": "Echo Gallery",             "x": 0, "y": 4 },
       { "id": "r22", "name": "South Entrance",           "x": 1, "y": 4 },
