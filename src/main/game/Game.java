@@ -16,7 +16,7 @@ public class Game {
     private final Maze maze;
     private final LinkedQueue<Player> queueShifts;
     private int currentShift;
-    private Player winner;
+    public Player winner;
     private final Random random;
     private final DoubleLinkedUnorderedList<Player> allPlayers;
     private final Scanner scanner;
@@ -139,7 +139,7 @@ public class Game {
         }
 
         active.setCurrentPosition(next);
-        active.addActionToHistory("Movement: " + current.getId() + " -> " + next.getName());
+        active.addActionToHistory("Movement -> " + next.getName());
 
         if (!active.getHistoricalActions().isEmpty() && active.getHistoricalActions().last().contains("EXTRA_MOVE")) {
             Room extraNext = active.chooseMovement(this);
@@ -159,7 +159,7 @@ public class Game {
                     boolean canEnterExtra = extraHall.activateEvent(active, this);
                     if (canEnterExtra) {
                         active.setCurrentPosition(extraNext);
-                        active.addActionToHistory("Extra Movement: " + next.getId() + " -> " + extraNext.getName());
+                        active.addActionToHistory("Extra Movement: " + next.getName() + " -> " + extraNext.getName());
                         System.out.println("-> " + active.getName() + " made an extra move to " + extraNext.getName());
                     } else {
                         active.addActionToHistory("Extra movement blocked to " + extraNext.getName());
@@ -174,14 +174,12 @@ public class Game {
     public void swapAllPlayerPositions() {
         if (allPlayers.size() <= 1) return;
 
-        // 1. Coletar todas as posições atuais na ordem de inserção original dos jogadores
         Room[] tempArray = new Room[allPlayers.size()];
         int index = 0;
         for (Player player : allPlayers) {
             tempArray[index++] = player.getCurrentPosition();
         }
 
-        // 2. Embaralhar o array de posições (Algoritmo Fisher-Yates)
         for (int i = tempArray.length - 1; i > 0; i--) {
             int j = random.nextInt(i + 1);
             Room temp = tempArray[i];
@@ -189,7 +187,6 @@ public class Game {
             tempArray[j] = temp;
         }
 
-        // 3. Atribuir as novas posições embaralhadas de volta aos jogadores
         index = 0;
         for (Player player : allPlayers) {
             Room newPos = tempArray[index++];
@@ -341,22 +338,18 @@ public class Game {
         }
     }
 
-    // --- NOVO MÉTODO DE EXIBIÇÃO DE ESTADO (SEM CRÓNICAS) ---
     private void displayGameStateNarrative(Player activePlayer) {
         System.out.println("\n==================================================");
         System.out.println("== TURN " + currentShift + " | ACTIVE PLAYER: " + activePlayer.getName() + " ==");
         System.out.println("==================================================");
 
         System.out.println("\n>>> EXPLORERS' STATUS <<<");
-        // --- SUMMARY OF EACH PLAYER'S STATUS ---
         for (Player p : allPlayers) {
             String currentEffects = "None";
             Room pos = p.getCurrentPosition();
 
-            // 1. Find last action
             String lastAction = p.getHistoricalActions().size() > 0 ? p.getHistoricalActions().last() : "Start: " + (p.getCurrentPosition() != null ? p.getCurrentPosition().getName() : "Unknown");
 
-            // 2. Extract active effects
             if (p.getBlockedShifts() > 0) {
                 currentEffects = "BLOCKED (" + p.getBlockedShifts() + " turns left)";
             } else if (lastAction.contains("Gained an extra move")) {
@@ -365,17 +358,13 @@ public class Game {
                 currentEffects = "Pending LEVER/ENIGMA Challenge";
             }
 
-
-            // 3. Presentation Format
             System.out.println("-------------------------");
             System.out.println("Player: " + p.getName() + (p.equals(activePlayer) ? " (ACTIVE)" : ""));
 
-            // Start Position only after the second action (size >= 2)
             if (p.getHistoricalActions().size() >= 2) {
                 System.out.println("  Start Position: " + (p.getInitialPosition() != null ? p.getInitialPosition().getName() : "N/A"));
             }
 
-            // Show full historical actions to cover "all traversed halls and overcome obstacles"
             System.out.println("  History of Actions (All Traversed Halls/Overcome Obstacles):");
             // Usar Iterator explícito para garantir a exibição de todos os elementos
             Iterator<String> historyIterator = p.getHistoricalActions().iterator();
@@ -383,7 +372,7 @@ public class Game {
                 System.out.println("    - " + historyIterator.next());
             }
 
-            System.out.println("  Current Position: " + (pos != null ? pos.getName() + " (ID: " + pos.getId() + ")" : "N/A"));
+            System.out.println("  Current Position: " + (pos != null ? pos.getName() : "N/A"));
             System.out.println("  Active Effects: " + currentEffects);
         }
 

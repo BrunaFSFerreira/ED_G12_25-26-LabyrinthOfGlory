@@ -1,101 +1,111 @@
+// Conteúdo atualizado de src/main/io/JSONWriter.java
+
 package main.io;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import main.data.impl.list.DoubleLinkedUnorderedList;
-import main.data.impl.list.ArrayOrderedList;
-import main.data.impl.list.ArrayUnorderedList; // Usado como auxiliar para o loop
+import main.data.impl.list.ArrayUnorderedList;
 import main.game.Game;
 import main.game.Player;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class JSONWriter {
 
     private final String outputFilePath;
 
     public JSONWriter() {
-        this("resource-files/game_report.json");
+        this("resource-files/game_report_" + System.currentTimeMillis() + ".json");
     }
 
     public JSONWriter(String outputFilePath) {
         this.outputFilePath = outputFilePath;
     }
 
-    private class PlayerActionIterator {
-        final Player player;
-        final Iterator<String> actionIterator;
+    // CLASSE PARA O RELATÓRIO ESTATÍSTICO DE CADA JOGADOR
+    private class PlayerReport {
+        final String playerName;
+        final String finalPosition;
+        final String initialPosition;
+        final boolean isWinner;
+        final int blockedTurnsLeft;
 
-        PlayerActionIterator(Player p, Iterator<String> it) {
-            this.player = p;
-            this.actionIterator = it;
+        // O PERCURSO COMPLETO (Percurso, Obstáculos e Efeitos Aplicados)
+        final String[] pathAndEvents;
+
+        PlayerReport(Player p, Player gameWinner) {
+            this.playerName = p.getName();
+            // CORREÇÃO: Remove o ID da posição (apenas nome)
+            this.finalPosition = p.getCurrentPosition() != null ? p.getCurrentPosition().getName() : "Unknown";
+            this.initialPosition = p.getInitialPosition() != null ? p.getInitialPosition().getName() : "N/A";
+            this.isWinner = p.equals(gameWinner);
+            this.blockedTurnsLeft = p.getBlockedShifts();
+
+            // CONVERSÃO CRÍTICA: Copiar elementos da lista customizada para um array simples
+            DoubleLinkedUnorderedList<String> historyList = p.getHistoricalActions();
+            String[] actionsArray = new String[historyList.size()];
+            Iterator<String> it = historyList.iterator();
+            int index = 0;
+            while (it.hasNext()) {
+                // Ação está limpa de ID de sala se Game.executePlay estiver corrigido
+                actionsArray[index++] = it.next();
+            }
+            this.pathAndEvents = actionsArray;
         }
     }
 
-    private String formatActionNumber(int count) {
-        if (count < 10) {
-            return "00" + count + ". ";
-        } else if (count < 100) {
-            return "0" + count + ". ";
+    // CLASSE RAIZ DO DOCUMENTO JSON
+    private class GameReport {
+        final String game_id;
+        final String end_time;
+        final String winner;
+        final PlayerReport[] players;
+
+        GameReport(String game_id, String end_time, String winner, PlayerReport[] players) {
+            this.game_id = game_id;
+            this.end_time = end_time;
+            this.winner = winner;
+            this.players = players;
         }
-        return count + ". ";
     }
 
     public void writeGameReport(Game game) {
-        ArrayOrderedList<String> finalActions = new ArrayOrderedList<>();
 
-        ArrayUnorderedList<PlayerActionIterator> playerIterators = new ArrayUnorderedList<>();
+        // GERAÇÃO DE METADADOS
+        String gameId = String.valueOf(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        String endTime = sdf.format(new Date());
 
         DoubleLinkedUnorderedList<Player> allPlayers = game.getAllPlayers();
-        Iterator<Player> initPlayerIterator = allPlayers.iterator();
-        while(initPlayerIterator.hasNext()) {
-            Player p = initPlayerIterator.next();
-            playerIterators.addToRear(new PlayerActionIterator(p, p.getHistoricalActions().iterator()));
+        Player gameWinner = game.winner;
+
+        // 1. CONSTRUIR O SUMÁRIO DE CADA JOGADOR e popular o ARRAY nativo
+        PlayerReport[] playersArray = new PlayerReport[allPlayers.size()];
+
+        int index = 0;
+        for (Player p : allPlayers) {
+            playersArray[index++] = new PlayerReport(p, gameWinner);
         }
 
-        int globalIndex = 1;
-        boolean allFinished;
+        // 2. MONTAR O OBJETO FINAL DO RELATÓRIO
+        String winnerName = gameWinner != null ? gameWinner.getName() : "None";
+        GameReport finalReportObject = new GameReport(gameId, endTime, winnerName, playersArray);
 
-        do {
-            allFinished = true;
 
-            Iterator<PlayerActionIterator> itManager = playerIterators.iterator();
-
-            while(itManager.hasNext()) {
-                PlayerActionIterator pair = itManager.next();
-
-                if (pair.actionIterator.hasNext()) {
-                    allFinished = false;
-
-                    String action = pair.actionIterator.next();
-                    String playerName = pair.player.getName();
-
-                    String paddedIndex = formatActionNumber(globalIndex);
-                    String formattedAction = paddedIndex + "Player name " + playerName + " - " + action.replace("Movement: ", "movement ");
-
-                    finalActions.add(formattedAction);
-                    globalIndex++;
-                }
-            }
-        } while (!allFinished);
-
-        int size = finalActions.size();
-        String[] reportArray = new String[size];
-
-        Iterator<String> arrayIterator = finalActions.iterator();
-        int k = 0;
-        while (arrayIterator.hasNext()) {
-            String orderedAction = arrayIterator.next();
-            String finalAction = orderedAction.replaceAll("^0*(\\d+)\\. ", "$1. ");
-            reportArray[k++] = finalAction;
-        }
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        // ALTERAÇÃO CRÍTICA: Usa disableHtmlEscaping() para prevenir \u003e
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .serializeNulls()
+                .disableHtmlEscaping()
+                .create();
 
         try (FileWriter writer = new FileWriter(outputFilePath)) {
-            gson.toJson(reportArray, writer);
+            gson.toJson(finalReportObject, writer);
             System.out.println("Relatório do jogo escrito com sucesso em " + outputFilePath);
         } catch (IOException e) {
             System.err.println("Erro ao escrever o relatório JSON: " + e.getMessage());

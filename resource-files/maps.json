@@ -75,38 +75,113 @@
   },
   {
     "rooms": [
-        { "id": "r1",  "name": "Lonely Room",               "x": 0, "y": 0, "isEntrance": true },
-        { "id": "r2",  "name": "Secret Room",               "x": 1, "y": 0 },
-        { "id": "r3",  "name": "Hidden Nook",               "x": 2, "y": 0 },
-        { "id": "r4",  "name": "Mystery Chamber",           "x": 0, "y": 1 },
-        { "id": "r5",  "name": "Enchanted Hall",            "x": 1, "y": 1 },
+      { "id": "r1",  "name": "Lonely Room",         "x": 0, "y": 0, "isEntrance": true },
+      { "id": "r2",  "name": "Secret Room",         "x": 1, "y": 0 },
+      { "id": "r3",  "name": "Hidden Nook",         "x": 2, "y": 0 },
+      { "id": "r4",  "name": "Mystery Chamber",     "x": 3, "y": 0 },
 
-        { "id": "r6",  "name": "Forgotten Alcove",          "x": 2, "y": 1 },
-        { "id": "r7",  "name": "Abandoned Vault",           "x": 0, "y": 2, "correctLeverId": 1},
-        { "id": "r8",  "name": "Cursed Gallery",            "x": 1, "y": 2 , "hasTreasure": true},
-        { "id": "r9",  "name": "Lost Sanctuary",            "x": 2, "y": 2},
-        { "id": "r10", "name": "Exit",                     "x": 1, "y": 3,  "isEntrance": true },
+      { "id": "r5",  "name": "Enchanted Hall",      "x": 0, "y": 1 },
+      { "id": "r6",  "name": "Forgotten Alcove",    "x": 1, "y": 1, "correctLeverId": 1 },
+      { "id": "r7",  "name": "Abandoned Vault",     "x": 2, "y": 1 },
+      { "id": "r8",  "name": "Cursed Gallery",      "x": 3, "y": 1, "hasTreasure": true },
 
-        { "id": "r11", "name": "Mystic Passage",            "x": 0, "y": 3  },
-        { "id": "r12", "name": "Shadow Corridor",           "x": 2, "y": 3 },
-        { "id": "r13", "name": "Ethereal Chamber",          "x": 0, "y": 4 },
-        { "id": "r14", "name": "Phantom Room",              "x": 1, "y": 4, "correctLeverId": 3 },
-        { "id": "r15", "name": "Spectral Hallway",          "x": 2, "y": 4 }
+      { "id": "r9",  "name": "Lost Sanctuary",      "x": 0, "y": 2 },
+      { "id": "r10", "name": "Mystic Passage",      "x": 1, "y": 2 },
+      { "id": "r11", "name": "Shadow Corridor",     "x": 2, "y": 2 },
+      { "id": "r12", "name": "Forgotten Shrine",    "x": 3, "y": 2 },
+
+      { "id": "r13", "name": "Ethereal Chamber",    "x": 0, "y": 3 },
+      { "id": "r14", "name": "Phantom Room",        "x": 2, "y": 3, "correctLeverId": 3 },
+      { "id": "r15", "name": "Exit",                "x": 3, "y": 3, "isEntrance": true }
     ],
+
     "halls": [
-        { "origin": "r1",  "destination": "r2",  "size": 3 },
-        { "origin": "r2",  "destination": "r3",  "size": 4 },
-        { "origin": "r1",  "destination": "r4",  "size": 5 },
-        { "origin": "r4",  "destination": "r5",  "size": 3 },
-        { "origin": "r5",  "destination": "r6",  "size": 4 },
-        { "origin": "r4",  "destination": "r7",  "size": 6 },
-        { "origin": "r7",  "destination": "r8",  "size": 3 },
-        { "origin": "r8",  "destination": "r9",  "size": 4 },
-        { "origin": "r9",  "destination": "r12", "size": 5 },
-        { "origin": "r10", "destination": "r14", "size": 4 },
-        { "origin": "r14", "destination": "r15", "size": 3 },
-        { "origin": "r11", "destination": "r13", "size": 4 },
-        { "origin": "r13", "destination": "r14", "size": 3 }
+      { "origin": "r1", "destination": "r2", "size": 3 },
+      { "origin": "r2", "destination": "r3", "size": 4 },
+      { "origin": "r3", "destination": "r4", "size": 3 },
+
+      { "origin": "r1", "destination": "r5", "size": 5 },
+      { "origin": "r2", "destination": "r6", "size": 4 },
+      { "origin": "r3", "destination": "r7", "size": 3 },
+      { "origin": "r4", "destination": "r8", "size": 5 },
+
+      { "origin": "r5", "destination": "r6", "size": 3 },
+      { "origin": "r6", "destination": "r7", "size": 3 },
+      { "origin": "r7", "destination": "r8", "size": 4 },
+
+      { "origin": "r5", "destination": "r9",  "size": 4 },
+      { "origin": "r6", "destination": "r10", "size": 3 },
+      { "origin": "r7", "destination": "r11", "size": 3 },
+      { "origin": "r8", "destination": "r12", "size": 4 },
+
+      { "origin": "r9",  "destination": "r13", "size": 4 },
+      { "origin": "r11", "destination": "r14", "size": 3 },
+      { "origin": "r12", "destination": "r15", "size": 4 }
+    ]
+  },
+
+  {
+    "rooms": [
+      { "id": "r1",  "name": "Lonely Room",            "x": 0, "y": 0, "isEntrance": true },
+      { "id": "r2",  "name": "Secret Room",            "x": 1, "y": 0 },
+      { "id": "r3",  "name": "Hidden Nook",            "x": 2, "y": 0 },
+      { "id": "r4",  "name": "Mystery Chamber",        "x": 3, "y": 0 },
+      { "id": "r5",  "name": "Crystal Gate",           "x": 4, "y": 0 },
+
+      { "id": "r6",  "name": "Enchanted Hall",         "x": 0, "y": 1 },
+      { "id": "r7",  "name": "Forgotten Alcove",       "x": 1, "y": 1, "correctLeverId": 1 },
+      { "id": "r8",  "name": "Abandoned Vault",        "x": 2, "y": 1 },
+      { "id": "r9",  "name": "Cursed Gallery",         "x": 3, "y": 1, "hasTreasure": true },
+      { "id": "r10", "name": "Gloom Passage",          "x": 4, "y": 1 },
+
+      { "id": "r11", "name": "Lost Sanctuary",         "x": 0, "y": 2 },
+      { "id": "r12", "name": "Mystic Passage",         "x": 1, "y": 2 },
+      { "id": "r13", "name": "Shadow Corridor",        "x": 2, "y": 2 },
+      { "id": "r14", "name": "Forgotten Shrine",       "x": 3, "y": 2, "correctLeverId": 3 },
+      { "id": "r15", "name": "Silent Observatory",     "x": 4, "y": 2 },
+
+      { "id": "r16", "name": "Ethereal Chamber",       "x": 0, "y": 3 },
+      { "id": "r17", "name": "Spectral Crossing",      "x": 1, "y": 3 },
+      { "id": "r18", "name": "Phantom Room",           "x": 2, "y": 3 },
+      { "id": "r19", "name": "Echo Vault",             "x": 3, "y": 3 },
+      { "id": "r20", "name": "Exit",                   "x": 4, "y": 3, "isEntrance": true }
+    ],
+
+    "halls": [
+      { "origin": "r1", "destination": "r2", "size": 3 },
+      { "origin": "r2", "destination": "r3", "size": 4 },
+      { "origin": "r3", "destination": "r4", "size": 3 },
+      { "origin": "r4", "destination": "r5", "size": 4 },
+
+      { "origin": "r1", "destination": "r6", "size": 5 },
+      { "origin": "r2", "destination": "r7", "size": 3 },
+      { "origin": "r3", "destination": "r8", "size": 3 },
+      { "origin": "r4", "destination": "r9", "size": 4 },
+      { "origin": "r5", "destination": "r10", "size": 3 },
+
+      { "origin": "r6", "destination": "r7", "size": 3 },
+      { "origin": "r7", "destination": "r8", "size": 3 },
+      { "origin": "r8", "destination": "r9", "size": 4 },
+      { "origin": "r9", "destination": "r10", "size": 3 },
+
+      { "origin": "r6", "destination": "r11", "size": 4 },
+      { "origin": "r7", "destination": "r12", "size": 3 },
+      { "origin": "r8", "destination": "r13", "size": 3 },
+      { "origin": "r9", "destination": "r14", "size": 4 },
+      { "origin": "r10", "destination": "r15", "size": 4 },
+
+      { "origin": "r11", "destination": "r16", "size": 4 },
+      { "origin": "r12", "destination": "r17", "size": 3 },
+      { "origin": "r13", "destination": "r18", "size": 3 },
+      { "origin": "r14", "destination": "r19", "size": 4 },
+      { "origin": "r15", "destination": "r20", "size": 5 },
+
+      { "origin": "r16", "destination": "r17", "size": 3 },
+      { "origin": "r17", "destination": "r18", "size": 3 },
+      { "origin": "r18", "destination": "r19", "size": 3 },
+      { "origin": "r19", "destination": "r20", "size": 4 }
     ]
   }
+
+
 ]

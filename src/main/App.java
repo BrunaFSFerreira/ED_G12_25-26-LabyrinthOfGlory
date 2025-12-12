@@ -18,7 +18,7 @@ public class App {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         JSONReader reader = new JSONReader();
-        LinkedList<EnigmaData> listaEnigmas = reader.readEnigmas();
+        LinkedList<EnigmaData> listEnigmas = reader.readEnigmas();
         Maze maze = new Maze();
 
         LinkedUnorderedList<JSONReader.MapDTO> maps = new JSONReader().writeMap();
@@ -31,7 +31,7 @@ public class App {
         int index = 1;
         for (JSONReader.MapDTO map : maps) {
             int roomsCount = map.rooms != null ? map.rooms.size() : 0;
-            System.out.println("Mapa " + index + " - " + roomsCount + " rooms");
+            System.out.println("Map " + index + " - " + roomsCount + " rooms");
             index++;
         }
 
@@ -101,7 +101,7 @@ public class App {
 
         DoubleLinkedUnorderedList<Player> initialList = new DoubleLinkedUnorderedList<>();
 
-        Game game = new Game(maze, initialList, listaEnigmas, scanner);
+        Game game = new Game(maze, initialList, listEnigmas, scanner);
 
         game.addPlayers(playersForGame);
 
