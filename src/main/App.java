@@ -17,7 +17,6 @@ public class App {
     public static void main(String[] args) {
         JSONReader reader = new JSONReader();
         LinkedList<EnigmaData> listaEnigmas = reader.readEnigmas();
-
         Maze maze = new Maze();
         maze.loadJSONMap();
 

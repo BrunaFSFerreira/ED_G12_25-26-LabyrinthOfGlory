@@ -1,5 +1,7 @@
 package main.model;
 
+import main.data.impl.list.ArrayUnorderedList;
+import main.data.impl.list.LinkedList;
 import main.game.Game;
 import main.game.Player;
 import main.game.RandomEvent;
@@ -48,6 +50,8 @@ public class Challenge {
     private boolean handleEnigma(Player player, Game game, Room roomToUnlock, Scanner scanner) {
         ChallengeManager manager = game.getChallengeManager();
         EnigmaData enigma = manager.getNextEnigma();
+        Random random = new Random();
+        ArrayUnorderedList<String> options = new ArrayUnorderedList<>();
 
         if (enigma == null) {
             player.addActionToHistory("Unable to retrieve enigma.");
@@ -55,40 +59,79 @@ public class Challenge {
         }
 
         System.out.println(player.getName() + ", solve the enigma to unlock " + roomToUnlock.getName() + ":");
-        System.out.println(enigma.getQuestion());
+        System.out.println("\nPERGUNTA: " + enigma.getQuestion());
 
         String correctAnswer = enigma.getAnswer();
-        String wrongAnswer = generateWrongAnswer(correctAnswer);
+        if (!correctAnswer.isEmpty()) {
+            options.addToRear(correctAnswer);
+        }
 
-        boolean correctIsFirst = random.nextBoolean();
-        String op1 = correctIsFirst ? correctAnswer : wrongAnswer;
-        String op2 = correctIsFirst ? wrongAnswer : correctAnswer;
+        String[] allWrongAnswer = enigma.getWrongAnswers();
+        if (allWrongAnswer != null) {
+            for (String wrongAnswers : allWrongAnswer) {
+                options.addToRear(wrongAnswers);
+            }
+        }
 
-        System.out.println("1. " + op1);
-        System.out.println("2. " + op2);
+        int size = options.size();
+        String[] optionsArray = new String[size];
+        int index = 0;
+        for (String option : options) {
+            optionsArray[index++] = option;
+        }
 
-        System.out.print("Your answer (1 or 2): ");
-        String answer = scanner.nextLine().trim();
+        for (int i = size - 1; i > 0; i--) {
+            int randomIndex = random.nextInt(size);
+            String temp = optionsArray[i];
+            optionsArray[i] = optionsArray[randomIndex];
+            optionsArray[randomIndex] = temp;
+        }
 
-        if (enigma.checkAnswer(answer)) {
-            roomToUnlock.setChallengeResolved(true);
-            player.addActionToHistory("Solved ENIGMA challenge in room " + roomToUnlock.getName() + ". Correct answer: " + answer);
-            System.out.println("-> Desafio ENIGMA resolvido! A porta para " + roomToUnlock.getName() + " abre.");
-            return true;
-        } else {
-            player.addActionToHistory("Failed ENIGMA challenge in room " + roomToUnlock.getName() + ". Incorrect answer: " + answer);
-            System.out.println("-> Resposta incorreta! O acesso a " + roomToUnlock.getName() + " está bloqueado neste turno.");
+        int correctIndex = -1;
+        for (int i = 0; i < size; i++) {
+            if (optionsArray[i].equals(correctAnswer)) {
+                correctIndex = i + 1;
+                break;
+            }
+        }
+
+        System.out.println("\n--- Options ---");
+        for (int i = 0; i < size; i++) {
+            System.out.println((i + 1) + ". " + optionsArray[i]);
+        }
+
+        System.out.println("Your answer: ");
+        int playerChoice;
+        try {
+            playerChoice = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid option.");
+            player.addActionToHistory("Failed ENIGMA challenge in room " + roomToUnlock.getName() + ". Invalid input.");
             return false;
         }
-    }
 
-    private String generateWrongAnswer(String correctAnswer) {
-        try {
-            int num = Integer.parseInt(correctAnswer.trim());
-            if (num != 42) return String.valueOf(num + 1);
-            return "43";
-        } catch (NumberFormatException e) {
-            return "NAO " + correctAnswer.toUpperCase();
+        if (playerChoice < 1 || playerChoice > options.size()) {
+            System.out.println("Invalid option. Choose a number between 1 and " + options.size() + ".");
+            player.addActionToHistory("Failed ENIGMA challenge in room " + roomToUnlock.getName() + ". Invalid choice outside 1-" + options.size() + ".");
+            return false;
+        }
+
+        String selectedAnswer = optionsArray[playerChoice - 1];
+
+        boolean isCorrect = (playerChoice == correctIndex);
+
+        if(isCorrect){
+            player.addActionToHistory("Successfully challenged enigma in room " + roomToUnlock.getName() + ". Correct answer: " + selectedAnswer + ". Halls unlocked.");
+            System.out.println("Enigma resolved! Access to " + roomToUnlock.getName() + " unlocked.");
+            return true;
+        } else {
+            EventType eventType = possibleEvents[random.nextInt(possibleEvents.length)];
+            RandomEvent event = new RandomEvent(eventType);
+            event.activate(player, game);
+
+            player.addActionToHistory("Failed ENIGMA challenge in room " + roomToUnlock.getName() + ". Wrong answer: " + selectedAnswer + ". Event triggered: " + eventType.toString());
+            System.out.println("Wrong answer! Access to " + roomToUnlock.getName() + " is blocked this turn.");
+            return false;
         }
     }
 

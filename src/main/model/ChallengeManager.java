@@ -1,6 +1,8 @@
 package main.model;
 
 import main.data.impl.list.LinkedList;
+import main.data.impl.list.LinkedOrderedList;
+import main.data.impl.list.LinkedUnorderedList;
 import main.data.impl.queue.LinkedQueue;
 
 import java.util.Random;
@@ -25,7 +27,7 @@ public class ChallengeManager {
         if (available.isEmpty()){
             recicleEnigmas();
         }
-        if (!available.isEmpty()){
+        if (available.isEmpty()){
             return null;
         }
 

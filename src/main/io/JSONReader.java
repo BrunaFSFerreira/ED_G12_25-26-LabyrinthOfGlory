@@ -4,7 +4,6 @@ import com.google.gson.*;
 
 import java.io.FileReader;
 
-import main.data.impl.list.LinkedList;
 import main.data.impl.list.LinkedUnorderedList;
 import main.model.EnigmaData;
 

@@ -1,14 +1,12 @@
 [
-  "1. Player name a - movement r1 -\u003e Echoing Room",
-  "2. Player name a - Event triggered: TURN_BLOCK",
-  "3. Player name a - Will miss next 1 shifts!",
-  "4. Player name a - Failed LEVER challenge in room Lever Chamber. Wrong lever pulled (2). Event triggered: TURN_BLOCK",
-  "5. Player name a - Blocked. Turn skipped. Remaining: 0",
-  "6. Player name a - Event triggered: GENERAL_SWAP",
-  "7. Player name a - All players\u0027 positions have been swapped!",
-  "8. Player name a - Failed LEVER challenge in room Lever Chamber. Wrong lever pulled (1). Event triggered: GENERAL_SWAP",
-  "9. Player name a - Solved LEVER challenge in room Lever Chamber. Correct lever pulled (3). Halls unlocked.",
-  "10. Player name a - movement r6 -\u003e Lever Chamber",
-  "11. Player name a - movement r7 -\u003e Forgotten Forge",
-  "12. Player name a - movement r8 -\u003e Ancient Well"
+  "1. Player name A - movement r1 -\u003e Echoing Room",
+  "2. Player name B - movement r1 -\u003e Echoing Room",
+  "3. Player name A - movement r6 -\u003e East Hall",
+  "4. Player name B - Solved LEVER challenge in room Lever Chamber. Correct lever pulled (3). Halls unlocked.",
+  "5. Player name A - Unable to retrieve enigma.",
+  "6. Player name B - movement r6 -\u003e Lever Chamber",
+  "7. Player name A - movement r11 -\u003e Hidden Passage",
+  "8. Player name B - movement r7 -\u003e Forgotten Forge",
+  "9. Player name A - movement r16 -\u003e Echo Gallery",
+  "10. Player name B - movement r8 -\u003e Ancient Well"
 ]

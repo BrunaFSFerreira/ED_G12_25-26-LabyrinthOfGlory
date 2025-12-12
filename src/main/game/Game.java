@@ -104,10 +104,8 @@ public class Game {
         return false;
     }
 
-
     private void executePlay(Player active) {
         Room current = active.getCurrentPosition();
-
         Room next = active.chooseMovement(this);
 
         if (next == null) {
@@ -116,13 +114,13 @@ public class Game {
         }
 
         if (next.getChallenge() != null && !next.isChallengeResolved()) {
+            System.out.println("\nDesafio: " + next.getChallenge().getType() + " em " + next.getName());
             boolean solved = next.getChallenge().attemptChallenge(active, this, next, this.scanner);
-
             if (!solved) {
+                System.out.println(active.getName() + " challenge failed.");
                 return;
             }
         }
-
 
         Hall hall = getHallToDestination(current, next);
 
